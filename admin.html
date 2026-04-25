@@ -13,15 +13,41 @@
       --purple: #9b5cf6; --purple-dim: rgba(155,92,246,0.15); --purple-border: rgba(155,92,246,0.25);
       --green: #4ade80; --orange: #fb923c; --red: #f87171; --yellow: #fbbf24;
       --white: #f0eeff; --gray: #9090a8; --gray2: #3a3a52;
+      --discord: #5865F2;
     }
     body { background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; line-height: 1.6; }
     a { color: inherit; text-decoration: none; }
     input, textarea, select { font-family: inherit; font-size: 0.875rem; }
 
-    /* ── LAYOUT ── */
-    .admin-wrap { display: flex; min-height: 100vh; }
+    /* ── SCREENS ── */
+    .screen { display: none; }
+    .screen.active { display: flex; }
 
-    /* ── SIDEBAR ── */
+    /* ── LOGIN SCREEN ── */
+    #screen-login {
+      min-height: 100vh; align-items: center; justify-content: center;
+      background: var(--bg);
+      background-image: linear-gradient(rgba(155,92,246,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(155,92,246,0.07) 1px, transparent 1px);
+      background-size: 48px 48px;
+    }
+    .login-card { background: var(--bg2); border: 1px solid var(--purple-border); border-radius: 1.5rem; padding: 3rem 2.5rem; text-align: center; max-width: 420px; width: 100%; margin: 1rem; position: relative; overflow: hidden; }
+    .login-card::before { content:''; position:absolute; top:-80px; left:50%; transform:translateX(-50%); width:300px; height:300px; background:radial-gradient(circle, rgba(155,92,246,0.12), transparent); border-radius:50%; pointer-events:none; }
+    .login-logo { width: 64px; height: 64px; border-radius: 1rem; margin: 0 auto 1.5rem; }
+    .login-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .login-sub { color: var(--gray); font-size: 0.9rem; margin-bottom: 2rem; }
+    .login-discord-btn { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.85rem 2rem; border-radius: 0.75rem; background: var(--discord); color: white; font-weight: 600; font-size: 1rem; cursor: pointer; border: none; transition: all 0.2s; width: 100%; justify-content: center; }
+    .login-discord-btn:hover { background: #4752c4; transform: translateY(-1px); box-shadow: 0 8px 24px rgba(88,101,242,0.35); }
+    .login-note { margin-top: 1.25rem; font-size: 0.78rem; color: var(--gray2); }
+    .error-banner { background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.3); border-radius: 0.75rem; padding: 0.75rem 1rem; color: var(--red); font-size: 0.85rem; margin-bottom: 1.5rem; display: none; }
+    .error-banner.show { display: block; }
+
+    /* ── LOADING SCREEN ── */
+    #screen-loading { min-height: 100vh; align-items: center; justify-content: center; flex-direction: column; gap: 1rem; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--gray2); border-top-color: var(--purple); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── ADMIN LAYOUT ── */
+    #screen-admin { flex-direction: row; min-height: 100vh; }
     .sidebar { width: 240px; background: var(--bg2); border-right: 1px solid var(--gray2); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
     .sidebar-logo { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; margin-bottom: 1rem; }
     .sidebar-logo img { width: 26px; height: 26px; border-radius: 5px; }
@@ -30,42 +56,38 @@
     .sidebar-link { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 500; color: var(--gray); cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: all 0.2s; }
     .sidebar-link:hover { color: var(--white); background: rgba(255,255,255,0.05); }
     .sidebar-link.active { color: var(--purple); background: var(--purple-dim); }
-    .sidebar-link svg { flex-shrink: 0; }
     .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--gray2); padding-top: 1rem; }
+    .sidebar-user { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; margin-bottom: 0.5rem; }
+    .sidebar-user img { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--purple-border); }
+    .sidebar-user-name { font-size: 0.85rem; font-weight: 600; color: var(--white); }
+    .sidebar-user-tag { font-size: 0.72rem; color: var(--green); }
 
-    /* ── MAIN ── */
     .admin-main { flex: 1; overflow-y: auto; }
     .admin-topbar { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--gray2); background: var(--bg2); position: sticky; top: 0; z-index: 10; }
     .admin-page-title { font-size: 1.1rem; font-weight: 700; color: var(--white); }
     .admin-page-sub { font-size: 0.8rem; color: var(--gray); }
+
     .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; background: var(--bg3); border: 1px solid var(--purple-border); border-radius: 0.75rem; font-size: 0.875rem; color: var(--white); display: flex; align-items: center; gap: 0.5rem; z-index: 999; opacity: 0; transform: translateY(8px); transition: all 0.3s; pointer-events: none; }
     .toast.show { opacity: 1; transform: none; }
 
-    /* ── PANELS ── */
     .panel { display: none; padding: 2rem; }
     .panel.active { display: block; }
 
-    /* ── CARDS ── */
     .card { background: var(--bg2); border: 1px solid var(--gray2); border-radius: 1rem; overflow: hidden; margin-bottom: 1.5rem; }
     .card-head { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray2); display: flex; align-items: center; justify-content: space-between; }
     .card-title { font-weight: 700; font-size: 0.95rem; color: var(--white); }
     .card-body { padding: 1.5rem; }
 
-    /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
     .form-group.full { grid-column: 1 / -1; }
     label { font-size: 0.78rem; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; }
-    input[type=text], textarea, select {
-      background: var(--bg); border: 1px solid var(--gray2); border-radius: 0.6rem;
-      padding: 0.6rem 0.85rem; color: var(--white); outline: none; transition: border-color 0.2s; width: 100%;
-    }
+    input[type=text], textarea, select { background: var(--bg); border: 1px solid var(--gray2); border-radius: 0.6rem; padding: 0.6rem 0.85rem; color: var(--white); outline: none; transition: border-color 0.2s; width: 100%; }
     input[type=text]:focus, textarea:focus, select:focus { border-color: var(--purple); }
     textarea { resize: vertical; min-height: 80px; }
     select option { background: var(--bg2); }
     .form-actions { margin-top: 1.25rem; display: flex; gap: 0.75rem; }
 
-    /* ── BUTTONS ── */
     .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
     .btn-primary { background: var(--purple); color: white; }
     .btn-primary:hover { background: #8b4ee8; }
@@ -75,7 +97,6 @@
     .btn-danger:hover { background: rgba(248,113,113,0.25); }
     .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
 
-    /* ── TABLES / LISTS ── */
     .item-list { display: flex; flex-direction: column; gap: 0.5rem; }
     .item-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: var(--bg); border: 1px solid var(--gray2); border-radius: 0.75rem; transition: border-color 0.2s; }
     .item-row:hover { border-color: var(--purple-border); }
@@ -84,28 +105,18 @@
     .item-info { flex: 1; min-width: 0; }
     .item-name { font-weight: 600; font-size: 0.9rem; color: var(--white); }
     .item-meta { font-size: 0.78rem; color: var(--gray); }
-    .item-badge { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 600; }
     .color-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.35rem; }
-    .color-yellow { background: var(--yellow); }
-    .color-green  { background: var(--green); }
-    .color-orange { background: var(--orange); }
-    .color-purple { background: var(--purple); }
-    .color-red    { background: var(--red); }
-    .color-blue   { background: #60a5fa; }
+    .color-yellow { background: var(--yellow); } .color-green { background: var(--green); }
+    .color-orange { background: var(--orange); } .color-purple { background: var(--purple); }
+    .color-red { background: var(--red); } .color-blue { background: #60a5fa; }
 
     .empty-state { text-align: center; padding: 2.5rem; color: var(--gray); font-size: 0.9rem; }
 
-    /* ── DRAG HANDLE ── */
-    .drag-handle { color: var(--gray2); cursor: grab; padding: 0.25rem; flex-shrink: 0; }
-    .drag-handle:active { cursor: grabbing; }
-
-    /* ── STATS ── */
     .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
     .stat-card { background: var(--bg2); border: 1px solid var(--gray2); border-radius: 1rem; padding: 1.25rem; }
     .stat-value { font-size: 2rem; font-weight: 700; color: var(--white); font-family: 'JetBrains Mono', monospace; }
     .stat-label { font-size: 0.78rem; color: var(--gray); margin-top: 0.2rem; }
 
-    /* ── MOBILE ── */
     .sidebar-toggle { display: none; position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200; width: 44px; height: 44px; border-radius: 50%; background: var(--purple); border: none; color: white; cursor: pointer; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(155,92,246,0.4); }
     .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; }
     @media (max-width: 768px) {
@@ -113,15 +124,35 @@
       .sidebar.open { left: 0; }
       .sidebar-toggle { display: flex; }
       .sidebar-overlay.show { display: block; }
-      .admin-main { width: 100%; }
       .panel { padding: 1.25rem; }
     }
   </style>
 </head>
 <body>
 
-<div class="admin-wrap">
-  <!-- SIDEBAR -->
+<!-- LOADING -->
+<div class="screen active" id="screen-loading">
+  <div class="spinner"></div>
+  <span style="color:var(--gray);font-size:0.875rem;">Verifying session…</span>
+</div>
+
+<!-- LOGIN -->
+<div class="screen" id="screen-login">
+  <div class="login-card">
+    <img class="login-logo" src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="logo">
+    <div class="login-title">Admin Panel</div>
+    <div class="login-sub">Sign in with Discord to access the Unstable SMP admin panel.</div>
+    <div class="error-banner" id="error-banner"></div>
+    <button class="login-discord-btn" onclick="loginWithDiscord()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      Login with Discord
+    </button>
+    <div class="login-note">Only approved users can access this panel.</div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="screen" id="screen-admin">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-logo">
       <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="logo">
@@ -149,6 +180,17 @@
     </a>
 
     <div class="sidebar-bottom">
+      <div class="sidebar-user">
+        <img id="user-avatar" src="" alt="avatar">
+        <div>
+          <div class="sidebar-user-name" id="user-name">—</div>
+          <div class="sidebar-user-tag">● Authorized</div>
+        </div>
+      </div>
+      <a class="sidebar-link" href="/api/logout">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </a>
       <button class="sidebar-link" onclick="resetAll()">
         <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
         Reset to Defaults
@@ -157,7 +199,6 @@
   </aside>
   <div class="sidebar-overlay" id="overlay"></div>
 
-  <!-- MAIN -->
   <div class="admin-main">
     <div class="admin-topbar">
       <div>
@@ -169,21 +210,12 @@
     <!-- STAFF PANEL -->
     <div class="panel active" id="panel-staff">
       <div class="stats-row" id="staff-stats"></div>
-
       <div class="card">
-        <div class="card-head">
-          <div class="card-title">Add Staff Member</div>
-        </div>
+        <div class="card-head"><div class="card-title">Add Staff Member</div></div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="form-group">
-              <label>Display Name</label>
-              <input type="text" id="s-name" placeholder="e.g. 4peak">
-            </div>
-            <div class="form-group">
-              <label>Role</label>
-              <input type="text" id="s-role" placeholder="e.g. 👑 Owner">
-            </div>
+            <div class="form-group"><label>Display Name</label><input type="text" id="s-name" placeholder="e.g. 4peak"></div>
+            <div class="form-group"><label>Role</label><input type="text" id="s-role" placeholder="e.g. 👑 Owner"></div>
             <div class="form-group">
               <label>Color</label>
               <select id="s-color">
@@ -195,10 +227,7 @@
                 <option value="blue">🔵 Blue (Helper)</option>
               </select>
             </div>
-            <div class="form-group">
-              <label>Head Image URL</label>
-              <input type="text" id="s-img" placeholder="https://s.namemc.com/...">
-            </div>
+            <div class="form-group"><label>Head Image URL</label><input type="text" id="s-img" placeholder="https://s.namemc.com/..."></div>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" onclick="addStaff()">
@@ -208,42 +237,22 @@
           </div>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-head">
-          <div class="card-title">Current Staff</div>
-          <span id="staff-count" style="font-size:0.8rem;color:var(--gray)"></span>
-        </div>
-        <div class="card-body">
-          <div class="item-list" id="staff-list"></div>
-        </div>
+        <div class="card-head"><div class="card-title">Current Staff</div><span id="staff-count" style="font-size:0.8rem;color:var(--gray)"></span></div>
+        <div class="card-body"><div class="item-list" id="staff-list"></div></div>
       </div>
     </div>
 
     <!-- CHANGELOG PANEL -->
     <div class="panel" id="panel-changelog">
       <div class="card">
-        <div class="card-head">
-          <div class="card-title">Add Update</div>
-        </div>
+        <div class="card-head"><div class="card-title">Add Update</div></div>
         <div class="card-body">
           <div class="form-grid">
-            <div class="form-group">
-              <label>Version</label>
-              <input type="text" id="c-version" placeholder="e.g. v2.4">
-            </div>
-            <div class="form-group">
-              <label>Date (optional)</label>
-              <input type="text" id="c-date" placeholder="e.g. Apr 24, 2026">
-            </div>
-            <div class="form-group full">
-              <label>Title</label>
-              <input type="text" id="c-title" placeholder="e.g. New Crate Rewards">
-            </div>
-            <div class="form-group full">
-              <label>Description (optional)</label>
-              <textarea id="c-desc" placeholder="Brief description of what changed..."></textarea>
-            </div>
+            <div class="form-group"><label>Version</label><input type="text" id="c-version" placeholder="e.g. v2.4"></div>
+            <div class="form-group"><label>Date (optional)</label><input type="text" id="c-date" placeholder="e.g. Apr 24, 2026"></div>
+            <div class="form-group full"><label>Title</label><input type="text" id="c-title" placeholder="e.g. New Crate Rewards"></div>
+            <div class="form-group full"><label>Description (optional)</label><textarea id="c-desc" placeholder="Brief description of what changed..."></textarea></div>
           </div>
           <div class="form-actions">
             <button class="btn btn-primary" onclick="addChangelog()">
@@ -253,46 +262,93 @@
           </div>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-head">
-          <div class="card-title">All Updates</div>
-          <span id="changelog-count" style="font-size:0.8rem;color:var(--gray)"></span>
-        </div>
-        <div class="card-body">
-          <div class="item-list" id="changelog-list"></div>
-        </div>
+        <div class="card-head"><div class="card-title">All Updates</div><span id="changelog-count" style="font-size:0.8rem;color:var(--gray)"></span></div>
+        <div class="card-body"><div class="item-list" id="changelog-list"></div></div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Mobile toggle -->
 <button class="sidebar-toggle" id="sidebar-toggle">
   <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
 </button>
-
-<div class="toast" id="toast">
-  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-  <span id="toast-msg">Saved</span>
-</div>
+<div class="toast" id="toast"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg><span id="toast-msg">Saved</span></div>
 
 <script>
+  // ── Auth ──
+  const DISCORD_CLIENT_ID = '%%DISCORD_CLIENT_ID%%'; // replaced at deploy by env, or set manually
+  const REDIRECT_URI = window.location.origin + '/api/discord-callback';
+
+  function loginWithDiscord() {
+    const clientId = DISCORD_CLIENT_ID !== '%%DISCORD_CLIENT_ID%%' ? DISCORD_CLIENT_ID : prompt('Enter your Discord Client ID (set DISCORD_CLIENT_ID env var on Vercel):');
+    if (!clientId) return;
+    const url = `https://discord.com/oauth2/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
+    window.location.href = url;
+  }
+
+  function show(id) {
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // Check for error param
+  const urlParams = new URLSearchParams(window.location.search);
+  const errorParam = urlParams.get('error');
+
+  // Verify session on load
+  fetch('/api/verify-session', { credentials: 'include' })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) {
+        // Show admin panel
+        const u = data.user;
+        document.getElementById('user-name').textContent = u.username;
+        if (u.avatar) {
+          document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${u.id}/${u.avatar}.png?size=64`;
+        } else {
+          document.getElementById('user-avatar').src = `https://cdn.discordapp.com/embed/avatars/0.png`;
+        }
+        show('screen-admin');
+        renderStaff();
+        renderChangelog();
+      } else {
+        // Show login
+        if (errorParam) {
+          const msgs = {
+            unauthorized: '🚫 Your Discord account is not authorized to access this panel.',
+            token_exchange_failed: '⚠️ OAuth failed. Please try again.',
+            user_fetch_failed: '⚠️ Could not fetch your Discord profile.',
+            server_error: '⚠️ A server error occurred. Please try again.',
+          };
+          const banner = document.getElementById('error-banner');
+          banner.textContent = msgs[errorParam] || 'An error occurred.';
+          banner.classList.add('show');
+          // Clean URL
+          window.history.replaceState({}, '', '/admin');
+        }
+        show('screen-login');
+      }
+    })
+    .catch(() => {
+      // API not available (e.g. local dev without serverless) — show login
+      show('screen-login');
+    });
+
   // ── Storage ──
   const DEFAULT_STAFF = [
-    { id: Date.now()+'1', name:'4peak', role:'👑 Owner', color:'yellow', img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4' },
-    { id: Date.now()+'2', name:'blazeybean', role:'⭐ Co-Owner', color:'green', img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4' },
-    { id: Date.now()+'3', name:'Caleb', role:'🛡️ Manager', color:'orange', img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4' }
+    { id:'d1', name:'4peak', role:'👑 Owner', color:'yellow', img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4' },
+    { id:'d2', name:'blazeybean', role:'⭐ Co-Owner', color:'green', img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4' },
+    { id:'d3', name:'Caleb', role:'🛡️ Manager', color:'orange', img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4' }
   ];
   const DEFAULT_CHANGELOG = [
-    { id: Date.now()+'4', version:'v2.3', date:'', title:'New Crate Rewards', desc:'Added new crate rewards and performance improvements.' },
-    { id: Date.now()+'5', version:'v2.2', date:'', title:'Combat Balancing & Bug Fixes', desc:'Combat balancing adjustments and bug fixes.' }
+    { id:'c1', version:'v2.3', date:'', title:'New Crate Rewards', desc:'Added new crate rewards and performance improvements.' },
+    { id:'c2', version:'v2.2', date:'', title:'Combat Balancing & Bug Fixes', desc:'Combat balancing adjustments and bug fixes.' }
   ];
-
   function getStaff() { try { return JSON.parse(localStorage.getItem('usmp_staff')) || DEFAULT_STAFF; } catch(e) { return DEFAULT_STAFF; } }
   function getChangelog() { try { return JSON.parse(localStorage.getItem('usmp_changelog')) || DEFAULT_CHANGELOG; } catch(e) { return DEFAULT_CHANGELOG; } }
-  function saveStaff(data) { localStorage.setItem('usmp_staff', JSON.stringify(data)); }
-  function saveChangelog(data) { localStorage.setItem('usmp_changelog', JSON.stringify(data)); }
+  function saveStaff(d) { localStorage.setItem('usmp_staff', JSON.stringify(d)); }
+  function saveChangelog(d) { localStorage.setItem('usmp_changelog', JSON.stringify(d)); }
 
   // ── Toast ──
   function toast(msg) {
@@ -302,21 +358,20 @@
     setTimeout(() => t.classList.remove('show'), 2500);
   }
 
-  // ── Panel switching ──
-  const panels = { staff: { title:'Staff', sub:'Add, remove, and manage staff members' }, changelog: { title:'Changelog', sub:'Post updates and track server changes' } };
+  // ── Panel nav ──
   document.querySelectorAll('.sidebar-link[data-panel]').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.sidebar-link[data-panel]').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
       btn.classList.add('active');
       document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
-      const info = panels[btn.dataset.panel];
-      document.getElementById('topbar-title').textContent = info.title;
-      document.getElementById('topbar-sub').textContent = info.sub;
+      const info = { staff:['Staff','Add, remove, and manage staff members'], changelog:['Changelog','Post updates and track server changes'] };
+      document.getElementById('topbar-title').textContent = info[btn.dataset.panel][0];
+      document.getElementById('topbar-sub').textContent = info[btn.dataset.panel][1];
     });
   });
 
-  // ── Staff render ──
+  // ── Staff ──
   function renderStaff() {
     const staff = getStaff();
     document.getElementById('staff-count').textContent = staff.length + ' member' + (staff.length !== 1 ? 's' : '');
@@ -327,12 +382,10 @@
       <div class="stat-card"><div class="stat-value">${staff.filter(s=>['orange','purple','red','blue'].includes(s.color)).length}</div><div class="stat-label">Staff</div></div>
     `;
     const list = document.getElementById('staff-list');
-    if (!staff.length) { list.innerHTML = '<div class="empty-state">No staff members. Add one above.</div>'; return; }
+    if (!staff.length) { list.innerHTML = '<div class="empty-state">No staff members yet.</div>'; return; }
     list.innerHTML = staff.map(s => `
-      <div class="item-row" data-id="${s.id}">
-        <div class="item-avatar">
-          ${s.img ? `<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
-        </div>
+      <div class="item-row">
+        <div class="item-avatar">${s.img ? `<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">` : ''}</div>
         <div class="item-info">
           <div class="item-name">${s.name}</div>
           <div class="item-meta"><span class="color-dot color-${s.color}"></span>${s.role}</div>
@@ -343,8 +396,6 @@
         </button>
       </div>`).join('');
   }
-
-  // ── Add staff ──
   function addStaff() {
     const name = document.getElementById('s-name').value.trim();
     const role = document.getElementById('s-role').value.trim();
@@ -353,29 +404,22 @@
     if (!name || !role) { toast('Name and role are required!'); return; }
     const staff = getStaff();
     staff.push({ id: Date.now().toString(), name, role, color, img });
-    saveStaff(staff);
+    saveStaff(staff); renderStaff();
     ['s-name','s-role','s-img'].forEach(id => document.getElementById(id).value = '');
-    document.getElementById('s-color').value = 'yellow';
-    renderStaff();
     toast('Staff member added!');
   }
-
-  // ── Remove staff ──
   function removeStaff(id) {
-    const staff = getStaff().filter(s => s.id !== id);
-    saveStaff(staff);
-    renderStaff();
-    toast('Staff member removed.');
+    saveStaff(getStaff().filter(s => s.id !== id)); renderStaff(); toast('Staff member removed.');
   }
 
-  // ── Changelog render ──
+  // ── Changelog ──
   function renderChangelog() {
     const log = getChangelog();
     document.getElementById('changelog-count').textContent = log.length + ' update' + (log.length !== 1 ? 's' : '');
     const list = document.getElementById('changelog-list');
-    if (!log.length) { list.innerHTML = '<div class="empty-state">No updates yet. Add one above.</div>'; return; }
+    if (!log.length) { list.innerHTML = '<div class="empty-state">No updates yet.</div>'; return; }
     list.innerHTML = log.map(c => `
-      <div class="item-row" data-id="${c.id}">
+      <div class="item-row">
         <div class="item-info">
           <div class="item-name" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;">${c.version} — ${c.title}</div>
           <div class="item-meta">${c.date || 'No date'} ${c.desc ? '· ' + c.desc.substring(0,60) + (c.desc.length > 60 ? '…' : '') : ''}</div>
@@ -386,8 +430,6 @@
         </button>
       </div>`).join('');
   }
-
-  // ── Add changelog ──
   function addChangelog() {
     const version = document.getElementById('c-version').value.trim();
     const date = document.getElementById('c-date').value.trim();
@@ -396,31 +438,22 @@
     if (!version || !title) { toast('Version and title are required!'); return; }
     const log = getChangelog();
     log.unshift({ id: Date.now().toString(), version, date, title, desc });
-    saveChangelog(log);
+    saveChangelog(log); renderChangelog();
     ['c-version','c-date','c-title','c-desc'].forEach(id => document.getElementById(id).value = '');
-    renderChangelog();
     toast('Update posted!');
   }
-
-  // ── Remove changelog ──
   function removeChangelog(id) {
-    const log = getChangelog().filter(c => c.id !== id);
-    saveChangelog(log);
-    renderChangelog();
-    toast('Update removed.');
+    saveChangelog(getChangelog().filter(c => c.id !== id)); renderChangelog(); toast('Update removed.');
   }
 
   // ── Reset ──
   function resetAll() {
-    if (!confirm('Reset all data to defaults? This cannot be undone.')) return;
-    localStorage.removeItem('usmp_staff');
-    localStorage.removeItem('usmp_changelog');
-    renderStaff();
-    renderChangelog();
-    toast('Reset to defaults.');
+    if (!confirm('Reset all data to defaults?')) return;
+    localStorage.removeItem('usmp_staff'); localStorage.removeItem('usmp_changelog');
+    renderStaff(); renderChangelog(); toast('Reset to defaults.');
   }
 
-  // ── Mobile sidebar ──
+  // ── Mobile ──
   document.getElementById('sidebar-toggle').addEventListener('click', () => {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('overlay').classList.toggle('show');
@@ -429,10 +462,6 @@
     document.getElementById('sidebar').classList.remove('open');
     document.getElementById('overlay').classList.remove('show');
   });
-
-  // ── Init ──
-  renderStaff();
-  renderChangelog();
 </script>
 </body>
 </html>
