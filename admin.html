@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin · Unstable SMP</title>
+  <link rel="icon" href="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07070e; --bg2: #0d0d1a; --bg3: #13132a;
+      --purple: #9b5cf6; --purple-dim: rgba(155,92,246,0.15); --purple-border: rgba(155,92,246,0.25);
+      --green: #4ade80; --orange: #fb923c; --red: #f87171; --yellow: #fbbf24;
+      --white: #f0eeff; --gray: #9090a8; --gray2: #3a3a52;
+    }
+    body { background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    input, textarea, select { font-family: inherit; font-size: 0.875rem; }
+
+    /* ── LAYOUT ── */
+    .admin-wrap { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar { width: 240px; background: var(--bg2); border-right: 1px solid var(--gray2); padding: 1.5rem 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
+    .sidebar-logo { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.75rem; margin-bottom: 1rem; }
+    .sidebar-logo img { width: 26px; height: 26px; border-radius: 5px; }
+    .sidebar-logo span { font-weight: 700; font-size: 0.95rem; background: linear-gradient(135deg, var(--white), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .sidebar-label { font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray2); padding: 0 0.75rem; margin: 0.75rem 0 0.25rem; }
+    .sidebar-link { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 500; color: var(--gray); cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: all 0.2s; }
+    .sidebar-link:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+    .sidebar-link.active { color: var(--purple); background: var(--purple-dim); }
+    .sidebar-link svg { flex-shrink: 0; }
+    .sidebar-bottom { margin-top: auto; border-top: 1px solid var(--gray2); padding-top: 1rem; }
+
+    /* ── MAIN ── */
+    .admin-main { flex: 1; overflow-y: auto; }
+    .admin-topbar { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 2rem; border-bottom: 1px solid var(--gray2); background: var(--bg2); position: sticky; top: 0; z-index: 10; }
+    .admin-page-title { font-size: 1.1rem; font-weight: 700; color: var(--white); }
+    .admin-page-sub { font-size: 0.8rem; color: var(--gray); }
+    .toast { position: fixed; bottom: 1.5rem; right: 1.5rem; padding: 0.75rem 1.25rem; background: var(--bg3); border: 1px solid var(--purple-border); border-radius: 0.75rem; font-size: 0.875rem; color: var(--white); display: flex; align-items: center; gap: 0.5rem; z-index: 999; opacity: 0; transform: translateY(8px); transition: all 0.3s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: none; }
+
+    /* ── PANELS ── */
+    .panel { display: none; padding: 2rem; }
+    .panel.active { display: block; }
+
+    /* ── CARDS ── */
+    .card { background: var(--bg2); border: 1px solid var(--gray2); border-radius: 1rem; overflow: hidden; margin-bottom: 1.5rem; }
+    .card-head { padding: 1.25rem 1.5rem; border-bottom: 1px solid var(--gray2); display: flex; align-items: center; justify-content: space-between; }
+    .card-title { font-weight: 700; font-size: 0.95rem; color: var(--white); }
+    .card-body { padding: 1.5rem; }
+
+    /* ── FORM ── */
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    label { font-size: 0.78rem; font-weight: 600; color: var(--gray); text-transform: uppercase; letter-spacing: 0.06em; }
+    input[type=text], textarea, select {
+      background: var(--bg); border: 1px solid var(--gray2); border-radius: 0.6rem;
+      padding: 0.6rem 0.85rem; color: var(--white); outline: none; transition: border-color 0.2s; width: 100%;
+    }
+    input[type=text]:focus, textarea:focus, select:focus { border-color: var(--purple); }
+    textarea { resize: vertical; min-height: 80px; }
+    select option { background: var(--bg2); }
+    .form-actions { margin-top: 1.25rem; display: flex; gap: 0.75rem; }
+
+    /* ── BUTTONS ── */
+    .btn { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.55rem 1.25rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary { background: var(--purple); color: white; }
+    .btn-primary:hover { background: #8b4ee8; }
+    .btn-ghost { background: transparent; color: var(--gray); border: 1px solid var(--gray2); }
+    .btn-ghost:hover { color: var(--white); border-color: var(--gray); }
+    .btn-danger { background: rgba(248,113,113,0.15); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+    .btn-danger:hover { background: rgba(248,113,113,0.25); }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+
+    /* ── TABLES / LISTS ── */
+    .item-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .item-row { display: flex; align-items: center; gap: 1rem; padding: 0.75rem 1rem; background: var(--bg); border: 1px solid var(--gray2); border-radius: 0.75rem; transition: border-color 0.2s; }
+    .item-row:hover { border-color: var(--purple-border); }
+    .item-avatar { width: 36px; height: 36px; border-radius: 0.4rem; background: var(--bg2); overflow: hidden; flex-shrink: 0; }
+    .item-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .item-info { flex: 1; min-width: 0; }
+    .item-name { font-weight: 600; font-size: 0.9rem; color: var(--white); }
+    .item-meta { font-size: 0.78rem; color: var(--gray); }
+    .item-badge { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 600; }
+    .color-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 0.35rem; }
+    .color-yellow { background: var(--yellow); }
+    .color-green  { background: var(--green); }
+    .color-orange { background: var(--orange); }
+    .color-purple { background: var(--purple); }
+    .color-red    { background: var(--red); }
+    .color-blue   { background: #60a5fa; }
+
+    .empty-state { text-align: center; padding: 2.5rem; color: var(--gray); font-size: 0.9rem; }
+
+    /* ── DRAG HANDLE ── */
+    .drag-handle { color: var(--gray2); cursor: grab; padding: 0.25rem; flex-shrink: 0; }
+    .drag-handle:active { cursor: grabbing; }
+
+    /* ── STATS ── */
+    .stats-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--bg2); border: 1px solid var(--gray2); border-radius: 1rem; padding: 1.25rem; }
+    .stat-value { font-size: 2rem; font-weight: 700; color: var(--white); font-family: 'JetBrains Mono', monospace; }
+    .stat-label { font-size: 0.78rem; color: var(--gray); margin-top: 0.2rem; }
+
+    /* ── MOBILE ── */
+    .sidebar-toggle { display: none; position: fixed; bottom: 1.5rem; left: 1.5rem; z-index: 200; width: 44px; height: 44px; border-radius: 50%; background: var(--purple); border: none; color: white; cursor: pointer; align-items: center; justify-content: center; box-shadow: 0 4px 20px rgba(155,92,246,0.4); }
+    .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99; }
+    @media (max-width: 768px) {
+      .sidebar { position: fixed; left: -240px; top: 0; bottom: 0; z-index: 100; transition: left 0.3s; }
+      .sidebar.open { left: 0; }
+      .sidebar-toggle { display: flex; }
+      .sidebar-overlay.show { display: block; }
+      .admin-main { width: 100%; }
+      .panel { padding: 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-wrap">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="logo">
+      <span>Admin Panel</span>
+    </div>
+
+    <div class="sidebar-label">Manage</div>
+    <button class="sidebar-link active" data-panel="staff">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Staff
+    </button>
+    <button class="sidebar-link" data-panel="changelog">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+      Changelog
+    </button>
+
+    <div class="sidebar-label">Site</div>
+    <a class="sidebar-link" href="index.html" target="_blank">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      View Home
+    </a>
+    <a class="sidebar-link" href="rules.html" target="_blank">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>
+      View Rules
+    </a>
+
+    <div class="sidebar-bottom">
+      <button class="sidebar-link" onclick="resetAll()">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        Reset to Defaults
+      </button>
+    </div>
+  </aside>
+  <div class="sidebar-overlay" id="overlay"></div>
+
+  <!-- MAIN -->
+  <div class="admin-main">
+    <div class="admin-topbar">
+      <div>
+        <div class="admin-page-title" id="topbar-title">Staff</div>
+        <div class="admin-page-sub" id="topbar-sub">Add, remove, and manage staff members</div>
+      </div>
+    </div>
+
+    <!-- STAFF PANEL -->
+    <div class="panel active" id="panel-staff">
+      <div class="stats-row" id="staff-stats"></div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Add Staff Member</div>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Display Name</label>
+              <input type="text" id="s-name" placeholder="e.g. 4peak">
+            </div>
+            <div class="form-group">
+              <label>Role</label>
+              <input type="text" id="s-role" placeholder="e.g. 👑 Owner">
+            </div>
+            <div class="form-group">
+              <label>Color</label>
+              <select id="s-color">
+                <option value="yellow">🟡 Yellow (Owner)</option>
+                <option value="green">🟢 Green (Co-Owner)</option>
+                <option value="orange">🟠 Orange (Manager)</option>
+                <option value="purple">🟣 Purple (Admin)</option>
+                <option value="red">🔴 Red (Moderator)</option>
+                <option value="blue">🔵 Blue (Helper)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Head Image URL</label>
+              <input type="text" id="s-img" placeholder="https://s.namemc.com/...">
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addStaff()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Member
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Current Staff</div>
+          <span id="staff-count" style="font-size:0.8rem;color:var(--gray)"></span>
+        </div>
+        <div class="card-body">
+          <div class="item-list" id="staff-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CHANGELOG PANEL -->
+    <div class="panel" id="panel-changelog">
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">Add Update</div>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Version</label>
+              <input type="text" id="c-version" placeholder="e.g. v2.4">
+            </div>
+            <div class="form-group">
+              <label>Date (optional)</label>
+              <input type="text" id="c-date" placeholder="e.g. Apr 24, 2026">
+            </div>
+            <div class="form-group full">
+              <label>Title</label>
+              <input type="text" id="c-title" placeholder="e.g. New Crate Rewards">
+            </div>
+            <div class="form-group full">
+              <label>Description (optional)</label>
+              <textarea id="c-desc" placeholder="Brief description of what changed..."></textarea>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" onclick="addChangelog()">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add Update
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <div class="card-title">All Updates</div>
+          <span id="changelog-count" style="font-size:0.8rem;color:var(--gray)"></span>
+        </div>
+        <div class="card-body">
+          <div class="item-list" id="changelog-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile toggle -->
+<button class="sidebar-toggle" id="sidebar-toggle">
+  <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+</button>
+
+<div class="toast" id="toast">
+  <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+  <span id="toast-msg">Saved</span>
+</div>
+
+<script>
+  // ── Storage ──
+  const DEFAULT_STAFF = [
+    { id: Date.now()+'1', name:'4peak', role:'👑 Owner', color:'yellow', img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4' },
+    { id: Date.now()+'2', name:'blazeybean', role:'⭐ Co-Owner', color:'green', img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4' },
+    { id: Date.now()+'3', name:'Caleb', role:'🛡️ Manager', color:'orange', img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4' }
+  ];
+  const DEFAULT_CHANGELOG = [
+    { id: Date.now()+'4', version:'v2.3', date:'', title:'New Crate Rewards', desc:'Added new crate rewards and performance improvements.' },
+    { id: Date.now()+'5', version:'v2.2', date:'', title:'Combat Balancing & Bug Fixes', desc:'Combat balancing adjustments and bug fixes.' }
+  ];
+
+  function getStaff() { try { return JSON.parse(localStorage.getItem('usmp_staff')) || DEFAULT_STAFF; } catch(e) { return DEFAULT_STAFF; } }
+  function getChangelog() { try { return JSON.parse(localStorage.getItem('usmp_changelog')) || DEFAULT_CHANGELOG; } catch(e) { return DEFAULT_CHANGELOG; } }
+  function saveStaff(data) { localStorage.setItem('usmp_staff', JSON.stringify(data)); }
+  function saveChangelog(data) { localStorage.setItem('usmp_changelog', JSON.stringify(data)); }
+
+  // ── Toast ──
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  // ── Panel switching ──
+  const panels = { staff: { title:'Staff', sub:'Add, remove, and manage staff members' }, changelog: { title:'Changelog', sub:'Post updates and track server changes' } };
+  document.querySelectorAll('.sidebar-link[data-panel]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-link[data-panel]').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('panel-' + btn.dataset.panel).classList.add('active');
+      const info = panels[btn.dataset.panel];
+      document.getElementById('topbar-title').textContent = info.title;
+      document.getElementById('topbar-sub').textContent = info.sub;
+    });
+  });
+
+  // ── Staff render ──
+  function renderStaff() {
+    const staff = getStaff();
+    document.getElementById('staff-count').textContent = staff.length + ' member' + (staff.length !== 1 ? 's' : '');
+    document.getElementById('staff-stats').innerHTML = `
+      <div class="stat-card"><div class="stat-value">${staff.length}</div><div class="stat-label">Staff Members</div></div>
+      <div class="stat-card"><div class="stat-value">${staff.filter(s=>s.color==='yellow').length}</div><div class="stat-label">Owners</div></div>
+      <div class="stat-card"><div class="stat-value">${staff.filter(s=>s.color==='green').length}</div><div class="stat-label">Co-Owners</div></div>
+      <div class="stat-card"><div class="stat-value">${staff.filter(s=>['orange','purple','red','blue'].includes(s.color)).length}</div><div class="stat-label">Staff</div></div>
+    `;
+    const list = document.getElementById('staff-list');
+    if (!staff.length) { list.innerHTML = '<div class="empty-state">No staff members. Add one above.</div>'; return; }
+    list.innerHTML = staff.map(s => `
+      <div class="item-row" data-id="${s.id}">
+        <div class="item-avatar">
+          ${s.img ? `<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">` : ''}
+        </div>
+        <div class="item-info">
+          <div class="item-name">${s.name}</div>
+          <div class="item-meta"><span class="color-dot color-${s.color}"></span>${s.role}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeStaff('${s.id}')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Remove
+        </button>
+      </div>`).join('');
+  }
+
+  // ── Add staff ──
+  function addStaff() {
+    const name = document.getElementById('s-name').value.trim();
+    const role = document.getElementById('s-role').value.trim();
+    const color = document.getElementById('s-color').value;
+    const img = document.getElementById('s-img').value.trim();
+    if (!name || !role) { toast('Name and role are required!'); return; }
+    const staff = getStaff();
+    staff.push({ id: Date.now().toString(), name, role, color, img });
+    saveStaff(staff);
+    ['s-name','s-role','s-img'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('s-color').value = 'yellow';
+    renderStaff();
+    toast('Staff member added!');
+  }
+
+  // ── Remove staff ──
+  function removeStaff(id) {
+    const staff = getStaff().filter(s => s.id !== id);
+    saveStaff(staff);
+    renderStaff();
+    toast('Staff member removed.');
+  }
+
+  // ── Changelog render ──
+  function renderChangelog() {
+    const log = getChangelog();
+    document.getElementById('changelog-count').textContent = log.length + ' update' + (log.length !== 1 ? 's' : '');
+    const list = document.getElementById('changelog-list');
+    if (!log.length) { list.innerHTML = '<div class="empty-state">No updates yet. Add one above.</div>'; return; }
+    list.innerHTML = log.map(c => `
+      <div class="item-row" data-id="${c.id}">
+        <div class="item-info">
+          <div class="item-name" style="font-family:'JetBrains Mono',monospace;font-size:0.85rem;">${c.version} — ${c.title}</div>
+          <div class="item-meta">${c.date || 'No date'} ${c.desc ? '· ' + c.desc.substring(0,60) + (c.desc.length > 60 ? '…' : '') : ''}</div>
+        </div>
+        <button class="btn btn-danger btn-sm" onclick="removeChangelog('${c.id}')">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+          Remove
+        </button>
+      </div>`).join('');
+  }
+
+  // ── Add changelog ──
+  function addChangelog() {
+    const version = document.getElementById('c-version').value.trim();
+    const date = document.getElementById('c-date').value.trim();
+    const title = document.getElementById('c-title').value.trim();
+    const desc = document.getElementById('c-desc').value.trim();
+    if (!version || !title) { toast('Version and title are required!'); return; }
+    const log = getChangelog();
+    log.unshift({ id: Date.now().toString(), version, date, title, desc });
+    saveChangelog(log);
+    ['c-version','c-date','c-title','c-desc'].forEach(id => document.getElementById(id).value = '');
+    renderChangelog();
+    toast('Update posted!');
+  }
+
+  // ── Remove changelog ──
+  function removeChangelog(id) {
+    const log = getChangelog().filter(c => c.id !== id);
+    saveChangelog(log);
+    renderChangelog();
+    toast('Update removed.');
+  }
+
+  // ── Reset ──
+  function resetAll() {
+    if (!confirm('Reset all data to defaults? This cannot be undone.')) return;
+    localStorage.removeItem('usmp_staff');
+    localStorage.removeItem('usmp_changelog');
+    renderStaff();
+    renderChangelog();
+    toast('Reset to defaults.');
+  }
+
+  // ── Mobile sidebar ──
+  document.getElementById('sidebar-toggle').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('overlay').classList.toggle('show');
+  });
+  document.getElementById('overlay').addEventListener('click', () => {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('overlay').classList.remove('show');
+  });
+
+  // ── Init ──
+  renderStaff();
+  renderChangelog();
+</script>
+</body>
+</html>

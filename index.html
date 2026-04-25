@@ -4,337 +4,361 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unstable SMP</title>
-  <link rel="icon" type="image/png" href="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="icon" href="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024">
   <style>
-    body { background: #0a0a0f; color: white; font-family: sans-serif; margin: 0; }
-    @keyframes pulse-slow { 0%, 100% { opacity: 0.6; } 50% { opacity: 1; } }
-    .animate-pulse { animation: pulse-slow 2s ease-in-out infinite; }
-    .delay-1000 { animation-delay: 1s; }
-    .font-mono { font-family: 'Courier New', monospace; }
-    .backdrop-blur-xl { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); }
-    .hover\:scale-105:hover { transform: scale(1.05); }
-    .hover\:scale-\[1\.02\]:hover { transform: scale(1.02); }
-    .hover\:-translate-y-0\.5:hover { transform: translateY(-2px); }
-    .transition-all { transition: all 0.3s ease; }
-    .grid-bg {
-      background-image: linear-gradient(rgba(168, 85, 247, 0.1) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(168, 85, 247, 0.1) 1px, transparent 1px);
-      background-size: 50px 50px;
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #07070e;
+      --bg2: #0d0d1a;
+      --purple: #9b5cf6;
+      --purple-dim: rgba(155,92,246,0.15);
+      --purple-border: rgba(155,92,246,0.25);
+      --green: #4ade80;
+      --orange: #fb923c;
+      --yellow: #fbbf24;
+      --white: #f0eeff;
+      --gray: #9090a8;
+      --gray2: #3a3a52;
     }
-    /* Scroll reveal */
-    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal.visible { opacity: 1; transform: none; }
-    .reveal-left { opacity: 0; transform: translateX(-20px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .reveal-left.visible { opacity: 1; transform: none; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; line-height: 1.6; overflow-x: hidden; }
+    a { color: inherit; text-decoration: none; }
+    img { display: block; }
+
+    /* ── NAV ── */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 1.5rem; }
+    .nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; background: rgba(13,13,26,0.7); backdrop-filter: blur(20px); border: 1px solid var(--purple-border); border-radius: 1rem; padding: 0.75rem 1.5rem; }
+    .nav-logo { display: flex; align-items: center; gap: 0.6rem; }
+    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
+    .nav-logo span { font-weight: 700; font-size: 1.05rem; background: linear-gradient(135deg, var(--white), var(--purple)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .nav-links { display: flex; gap: 0.25rem; }
+    .nav-links a { padding: 0.4rem 1rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 500; color: var(--gray); transition: all 0.2s; }
+    .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.06); }
+    .nav-links a.active { background: var(--purple-dim); color: var(--purple); border: 1px solid var(--purple-border); }
+    .nav-hamburger { display: none; background: none; border: none; color: var(--gray); cursor: pointer; padding: 0.25rem; }
+    .nav-mobile { display: none; flex-direction: column; gap: 0.25rem; padding-top: 0.75rem; margin-top: 0.75rem; border-top: 1px solid var(--purple-border); }
+    .nav-mobile.open { display: flex; }
+    .nav-mobile a { padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--gray); }
+    .nav-mobile a.active { color: var(--purple); background: var(--purple-dim); }
+    @media (max-width: 640px) { .nav-links { display: none; } .nav-hamburger { display: block; } }
+
+    /* ── HERO ── */
+    .hero { position: relative; min-height: 100vh; display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 8rem 1.5rem 4rem; }
+    .hero-bg { position: absolute; inset: 0; z-index: 0; }
+    .hero-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.35; }
+    .hero-blob-1 { width: 500px; height: 500px; background: radial-gradient(circle, #6d28d9, transparent); top: -100px; left: -100px; animation: drift1 12s ease-in-out infinite; }
+    .hero-blob-2 { width: 400px; height: 400px; background: radial-gradient(circle, #4c1d95, transparent); bottom: -50px; right: -50px; animation: drift2 15s ease-in-out infinite; }
+    .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(155,92,246,0.07) 1px, transparent 1px), linear-gradient(90deg, rgba(155,92,246,0.07) 1px, transparent 1px); background-size: 48px 48px; }
+    @keyframes drift1 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(30px,20px)} }
+    @keyframes drift2 { 0%,100%{transform:translate(0,0)} 50%{transform:translate(-20px,30px)} }
+    .hero-content { position: relative; z-index: 1; text-align: center; max-width: 800px; }
+    .hero-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.4rem 1rem; border-radius: 9999px; background: rgba(13,13,26,0.8); border: 1px solid var(--purple-border); font-size: 0.8rem; margin-bottom: 2rem; }
+    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 1.8s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    h1.hero-title { font-size: clamp(3.5rem, 9vw, 7rem); font-weight: 700; line-height: 0.95; letter-spacing: -0.03em; margin-bottom: 1.5rem; }
+    h1.hero-title span.w { color: var(--white); }
+    h1.hero-title span.g { background: linear-gradient(135deg, var(--purple), #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { color: var(--gray); font-size: 1.1rem; margin-bottom: 2.5rem; max-width: 480px; margin-left: auto; margin-right: auto; }
+    .ip-box { display: inline-flex; align-items: center; gap: 1rem; background: var(--bg2); border: 1px solid var(--purple-border); border-radius: 1rem; padding: 1rem 1.5rem; cursor: pointer; transition: all 0.3s; }
+    .ip-box:hover { border-color: var(--purple); box-shadow: 0 0 30px rgba(155,92,246,0.2); }
+    .ip-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--gray); margin-bottom: 0.2rem; }
+    .ip-addr { font-family: 'JetBrains Mono', monospace; font-size: clamp(1rem, 2.5vw, 1.5rem); font-weight: 700; color: var(--white); }
+    .ip-icon { padding: 0.6rem; background: var(--purple-dim); border-radius: 0.5rem; color: var(--purple); transition: background 0.2s; }
+    .ip-box:hover .ip-icon { background: rgba(155,92,246,0.3); }
+    .ip-hint { margin-top: 0.75rem; font-size: 0.8rem; color: var(--gray); }
+
+    /* ── SECTIONS ── */
+    section { padding: 5rem 1.5rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-header { text-align: center; margin-bottom: 3rem; }
+    .section-tag { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.8rem; border-radius: 9999px; background: var(--purple-dim); border: 1px solid var(--purple-border); color: var(--purple); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 700; color: var(--white); margin-bottom: 0.75rem; }
+    .section-desc { color: var(--gray); font-size: 0.95rem; max-width: 480px; margin: 0 auto; }
+
+    /* ── DISCORD ── */
+    .discord-card { background: var(--bg2); border: 1px solid var(--purple-border); border-radius: 1.5rem; padding: 2.5rem; display: flex; align-items: center; gap: 3rem; flex-wrap: wrap; overflow: hidden; position: relative; }
+    .discord-card::before { content:''; position:absolute; top:-60px; right:-60px; width:240px; height:240px; background:radial-gradient(circle, rgba(99,102,241,0.15), transparent); border-radius:50%; }
+    .discord-info { flex: 1; min-width: 260px; }
+    .discord-info h2 { font-size: 1.8rem; font-weight: 700; margin-bottom: 0.75rem; }
+    .discord-info p { color: var(--gray); margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .discord-stats { display: flex; gap: 2rem; margin-bottom: 1.75rem; flex-wrap: wrap; }
+    .discord-stat { font-size: 0.875rem; color: var(--gray); display: flex; align-items: center; gap: 0.4rem; }
+    .discord-stat svg { color: var(--purple); }
+    .discord-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.75rem 1.75rem; border-radius: 0.75rem; background: #5865F2; color: white; font-weight: 600; font-size: 0.95rem; transition: all 0.2s; }
+    .discord-btn:hover { background: #4752c4; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88,101,242,0.35); }
+    .discord-logo { width: 130px; height: 130px; background: rgba(88,101,242,0.12); border: 1px solid rgba(88,101,242,0.25); border-radius: 1.5rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .discord-logo svg { width: 72px; height: 72px; color: #818cf8; }
+
+    /* ── STAFF ── */
+    .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+    .staff-card { background: var(--bg2); border: 1px solid var(--gray2); border-radius: 1rem; padding: 1.25rem; display: flex; align-items: center; gap: 1rem; transition: all 0.3s; }
+    .staff-card:hover { transform: translateY(-3px); }
+    .staff-card.yellow { border-color: rgba(251,191,36,0.3); background: rgba(251,191,36,0.05); }
+    .staff-card.green  { border-color: rgba(74,222,128,0.3); background: rgba(74,222,128,0.05); }
+    .staff-card.orange { border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.05); }
+    .staff-card.purple { border-color: rgba(155,92,246,0.3); background: rgba(155,92,246,0.05); }
+    .staff-card.red    { border-color: rgba(248,113,113,0.3); background: rgba(248,113,113,0.05); }
+    .staff-card.blue   { border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.05); }
+    .staff-avatar-wrap { width: 52px; height: 52px; border-radius: 0.6rem; padding: 2px; flex-shrink: 0; }
+    .staff-card.yellow .staff-avatar-wrap { background: linear-gradient(135deg, #fbbf24, #f97316); }
+    .staff-card.green  .staff-avatar-wrap { background: linear-gradient(135deg, #4ade80, #10b981); }
+    .staff-card.orange .staff-avatar-wrap { background: linear-gradient(135deg, #fb923c, #f59e0b); }
+    .staff-card.purple .staff-avatar-wrap { background: linear-gradient(135deg, #9b5cf6, #7c3aed); }
+    .staff-card.red    .staff-avatar-wrap { background: linear-gradient(135deg, #f87171, #dc2626); }
+    .staff-card.blue   .staff-avatar-wrap { background: linear-gradient(135deg, #60a5fa, #3b82f6); }
+    .staff-avatar-inner { width: 100%; height: 100%; border-radius: 0.4rem; background: var(--bg); overflow: hidden; }
+    .staff-avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
+    .staff-name { font-weight: 700; font-size: 1rem; color: var(--white); }
+    .staff-role { font-size: 0.8rem; font-weight: 600; margin-top: 0.15rem; }
+    .staff-card.yellow .staff-role { color: #fbbf24; }
+    .staff-card.green  .staff-role { color: #4ade80; }
+    .staff-card.orange .staff-role { color: #fb923c; }
+    .staff-card.purple .staff-role { color: #9b5cf6; }
+    .staff-card.red    .staff-role { color: #f87171; }
+    .staff-card.blue   .staff-role { color: #60a5fa; }
+    .staff-empty { text-align: center; color: var(--gray); padding: 2rem; font-size: 0.9rem; }
+
+    /* ── CHANGELOG ── */
+    .changelog-list { display: flex; flex-direction: column; gap: 0.75rem; }
+    .changelog-item { background: var(--bg2); border: 1px solid var(--purple-border); border-radius: 1rem; padding: 1.25rem 1.5rem; display: flex; align-items: flex-start; gap: 1rem; transition: all 0.3s; }
+    .changelog-item:hover { border-color: var(--purple); }
+    .changelog-icon { padding: 0.5rem; background: var(--purple-dim); border-radius: 0.5rem; color: var(--purple); flex-shrink: 0; margin-top: 0.1rem; }
+    .changelog-meta { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.3rem; flex-wrap: wrap; }
+    .changelog-ver { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; background: rgba(155,92,246,0.15); color: var(--purple); padding: 0.15rem 0.5rem; border-radius: 0.35rem; border: 1px solid var(--purple-border); }
+    .changelog-date { font-size: 0.8rem; color: var(--gray); }
+    .changelog-title { font-weight: 600; color: var(--white); font-size: 1rem; }
+    .changelog-desc { font-size: 0.875rem; color: var(--gray); margin-top: 0.25rem; }
+    .changelog-empty { text-align: center; color: var(--gray); padding: 2rem; font-size: 0.9rem; }
+
+    /* ── FOOTER ── */
+    footer { padding: 2rem 1.5rem; border-top: 1px solid var(--gray2); text-align: center; }
+    footer p { color: var(--gray); font-size: 0.85rem; }
+    footer .sub { font-size: 0.75rem; color: var(--gray2); margin-top: 0.4rem; }
+
+    /* ── REVEAL ── */
+    .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .reveal.on { opacity: 1; transform: none; }
   </style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav class="fixed top-0 left-0 right-0 z-50">
-  <div class="mx-4 mt-4">
-    <div class="max-w-6xl mx-auto px-6 py-4 rounded-2xl bg-white/5 backdrop-blur-xl border border-white/10 shadow-lg shadow-black/20">
-      <div class="flex items-center justify-between">
-        <a class="flex items-center gap-3" href="#">
-          <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="Logo" class="h-6 w-6">
-          <span class="text-xl font-bold bg-gradient-to-r from-purple-400 to-violet-400 bg-clip-text text-transparent">Unstable SMP</span>
-        </a>
-        <div class="hidden md:flex items-center gap-1">
-          <a class="px-4 py-2 rounded-xl text-sm font-medium bg-purple-500/20 text-purple-400" href="#">Home</a>
-          <a class="px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all" href="https://www.unstablenet.xyz/Store" target="_blank">Store</a>
-          <a class="px-4 py-2 rounded-xl text-sm font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all" href="https://www.unstablenet.xyz/Rules" target="_blank">Rules</a>
-        </div>
-        <!-- Mobile menu button -->
-        <button id="menu-btn" class="md:hidden p-2 rounded-lg text-gray-300 hover:text-white hover:bg-white/10 transition-all">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/>
-          </svg>
-        </button>
-      </div>
-      <!-- Mobile menu -->
-      <div id="mobile-menu" class="hidden md:hidden mt-3 flex flex-col gap-1">
-        <a class="px-4 py-2 rounded-xl text-sm font-medium bg-purple-500/20 text-purple-400" href="#">Home</a>
-        <a class="px-4 py-2 rounded-xl text-sm font-medium text-gray-300" href="https://www.unstablenet.xyz/Store" target="_blank">Store</a>
-        <a class="px-4 py-2 rounded-xl text-sm font-medium text-gray-300" href="https://www.unstablenet.xyz/Rules" target="_blank">Rules</a>
-      </div>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">
+      <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="logo">
+      <span>Unstable SMP</span>
+    </a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="rules.html">Rules</a>
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Menu">
+      <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div style="max-width:1100px;margin:0 auto;padding:0 1.5rem;">
+    <div class="nav-mobile" id="mobile-menu" style="background:rgba(13,13,26,0.95);border:1px solid var(--purple-border);border-radius:0.75rem;padding:0.75rem;margin-top:0.5rem;">
+      <a href="index.html" class="active">Home</a>
+      <a href="rules.html">Rules</a>
     </div>
   </div>
 </nav>
 
-<main>
-
-  <!-- HERO -->
-  <section class="relative min-h-screen flex items-center justify-center overflow-hidden pt-24">
-    <div class="absolute inset-0">
-      <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-fuchsia-600/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-br from-purple-500/10 to-transparent rounded-full blur-3xl"></div>
-    </div>
-    <div class="absolute inset-0 opacity-20 grid-bg"></div>
-
-    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
-      <!-- Online badge -->
-      <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm font-medium mb-8">
-        <span class="w-2.5 h-2.5 rounded-full bg-green-400 shadow-lg shadow-green-400/50 animate-pulse"></span>
-        <span class="text-green-400">Online</span>
-        <span class="text-white/20">|</span>
-        <div class="flex items-center gap-1.5 text-gray-300">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="text-purple-400">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
-          <span id="player-count"><span class="text-white font-semibold">...</span><span class="text-gray-500">/150</span></span>
-        </div>
-      </div>
-
-      <h1 class="text-5xl md:text-7xl lg:text-8xl font-black mb-6">
-        <span class="bg-gradient-to-r from-white via-purple-200 to-purple-400 bg-clip-text text-transparent">UNSTABLE</span><span class="bg-gradient-to-r from-purple-400 to-violet-500 bg-clip-text text-transparent"> SMP</span>
-      </h1>
-      <p class="text-lg md:text-xl text-gray-400 mb-12 max-w-2xl mx-auto leading-relaxed">Ever wanted to wonder how it feels to get smashed by wemmbu’s mace? Or sliced by flames sword?Well don’t worry because in the Unstable SMP | Recreation, you can do just thatWe host weekly events like the law vs the unstable smp</p>
-
-      <!-- IP button -->
-      <div class="inline-block">
-        <button id="copy-btn" onclick="copyIP()" class="group relative px-8 py-5 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl border border-white/10 hover:border-purple-500/50 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/20">
-          <div class="flex items-center gap-4">
-            <div class="text-left">
-              <p class="text-xs text-gray-500 uppercase tracking-wider mb-1">Server IP</p>
-              <p class="text-2xl md:text-3xl font-mono font-bold text-white">play.unstablenet.xyz</p>
-            </div>
-            <div class="p-3 rounded-xl transition-all duration-300 bg-purple-500/20 text-purple-400 group-hover:bg-purple-500/30">
-              <svg id="copy-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>
-              </svg>
-            </div>
-          </div>
-        </button>
-        <p id="copy-label" class="mt-4 text-sm text-gray-500">Click to copy</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- DISCORD -->
-  <section class="py-24 px-6 relative overflow-hidden">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-indigo-500/5 to-transparent"></div>
-    <div class="max-w-6xl mx-auto relative">
-      <div class="reveal relative rounded-3xl bg-gradient-to-br from-white/5 to-white/[0.02] backdrop-blur-xl border border-white/10 p-8 md:p-12 overflow-hidden">
-        <div class="absolute -right-20 -top-20 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl"></div>
-        <div class="relative flex flex-col md:flex-row items-center gap-8">
-          <div class="flex-1 text-center md:text-left">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-sm font-medium mb-4">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
-              <span>Community</span>
-            </div>
-            <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Join Our Discord</h2>
-            <p class="text-gray-400 mb-6 max-w-lg">Connect with our amazing community, get support, participate in events, and stay updated on all server announcements.</p>
-            <div class="flex flex-wrap justify-center md:justify-start gap-6 mb-8">
-              <div class="flex items-center gap-2 text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="text-purple-400">
-                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-                </svg>
-                <span>7000+ Members</span>
-              </div>
-              <div class="flex items-center gap-2 text-gray-300">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="text-yellow-400">
-                  <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
-                </svg>
-                <span>Active 24/7</span>
-              </div>
-            </div>
-            <a href="https://discord.gg/WAYVDhEUJf" target="_blank" rel="noopener noreferrer"
-               class="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5">
-              <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-              </svg>
-              Join Discord
-            </a>
-          </div>
-          <div class="w-48 h-48 md:w-64 md:h-64 relative flex-shrink-0">
-            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl backdrop-blur-xl border border-white/10 flex items-center justify-center">
-              <svg class="w-24 h-24 md:w-32 md:h-32 text-indigo-400" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-              </svg>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STAFF -->
-  <section class="py-24 px-6">
-    <div class="max-w-6xl mx-auto">
-      <div class="reveal text-center mb-16">
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Meet Our Staff</h2>
-        <p class="text-gray-400 max-w-xl mx-auto">The dedicated team behind Unstable SMP, working hard to make your experience amazing.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <!-- 4peak -->
-        <div class="reveal group relative p-6 rounded-2xl bg-yellow-500/10 backdrop-blur-xl border border-yellow-500/20 hover:scale-105 transition-all duration-300">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-yellow-400 to-orange-500 p-0.5">
-              <div class="w-full h-full rounded-xl bg-gray-900 flex items-center justify-center overflow-hidden">
-                <img src="https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4" alt="4peak" class="w-full h-full object-cover">
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-white">4peak</h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-sm font-medium bg-gradient-to-r from-yellow-400 to-orange-500 bg-clip-text text-transparent">👑 Owner</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- blazeybean - Co-Owner - green -->
-        <div class="reveal group relative p-6 rounded-2xl bg-green-500/10 backdrop-blur-xl border border-green-500/20 hover:scale-105 transition-all duration-300">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 p-0.5">
-              <div class="w-full h-full rounded-xl bg-gray-900 flex items-center justify-center overflow-hidden">
-                <img src="https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4" alt="blazeybean" class="w-full h-full object-cover">
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-white">blazeybean</h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-sm font-medium bg-gradient-to-r from-green-400 to-emerald-500 bg-clip-text text-transparent">⭐ Co-Owner</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- Caleb - Manager - orange -->
-        <div class="reveal group relative p-6 rounded-2xl bg-orange-500/10 backdrop-blur-xl border border-orange-500/20 hover:scale-105 transition-all duration-300">
-          <div class="flex items-center gap-4">
-            <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-orange-400 to-amber-500 p-0.5">
-              <div class="w-full h-full rounded-xl bg-gray-900 flex items-center justify-center overflow-hidden">
-                <img src="https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4" alt="Caleb" class="w-full h-full object-cover">
-              </div>
-            </div>
-            <div>
-              <h3 class="text-xl font-bold text-white">Caleb</h3>
-              <div class="flex items-center gap-2 mt-1">
-                <span class="text-sm font-medium bg-gradient-to-r from-orange-400 to-amber-500 bg-clip-text text-transparent">🛡️ Lead Admin</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CHANGELOG -->
-  <section class="py-24 px-6 relative">
-    <div class="absolute inset-0 bg-gradient-to-b from-transparent via-purple-500/5 to-transparent"></div>
-    <div class="max-w-4xl mx-auto relative">
-      <div class="reveal text-center mb-16">
-        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-medium mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-            <path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/>
-            <path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/>
-          </svg>
-          <span>What's New</span>
-        </div>
-        <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Changelog</h2>
-        <p class="text-gray-400 max-w-xl mx-auto">Stay up to date with the latest updates, improvements, and fixes.</p>
-      </div>
-      <div class="space-y-4">
-        <!-- v2.3 -->
-        <div class="reveal-left p-6 rounded-2xl bg-purple-500/10 backdrop-blur-xl border border-purple-500/20 hover:scale-[1.02] transition-all duration-300">
-          <div class="flex items-start gap-4">
-            <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-3 mb-2">
-                <span class="px-2 py-0.5 rounded-md bg-white/10 text-white text-sm font-mono">v2.3</span>
-                <span class="text-gray-500 text-sm">N/A</span>
-              </div>
-              <h3 class="text-lg font-semibold text-white mb-1">New Crate Rewards</h3>
-              <p class="text-gray-400 text-sm">Added new crate rewards and performance improvements.</p>
-            </div>
-          </div>
-        </div>
-        <!-- v2.2 -->
-        <div class="reveal-left p-6 rounded-2xl bg-purple-500/10 backdrop-blur-xl border border-purple-500/20 hover:scale-[1.02] transition-all duration-300">
-          <div class="flex items-start gap-4">
-            <div class="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                <path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>
-              </svg>
-            </div>
-            <div class="flex-1">
-              <div class="flex flex-wrap items-center gap-3 mb-2">
-                <span class="px-2 py-0.5 rounded-md bg-white/10 text-white text-sm font-mono">v2.2</span>
-                <span class="text-gray-500 text-sm">N/A</span>
-              </div>
-              <h3 class="text-lg font-semibold text-white mb-1">Combat Balancing &amp; Bug Fixes</h3>
-              <p class="text-gray-400 text-sm">Combat balancing adjustments and bug fixes.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-</main>
-
-<!-- FOOTER -->
-<footer class="py-8 px-6 border-t border-white/10">
-  <div class="max-w-6xl mx-auto text-center">
-    <p class="text-gray-500 text-sm flex items-center justify-center gap-2">
-      Made with
-      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" class="text-lime-500">
-        <rect width="14" height="8" x="5" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 18h2"/><path d="M12 18h6"/>
-      </svg>
-      by Immcaleb and Keylympi
-    </p>
-    <p class="text-gray-600 text-xs mt-2">© 2026 Unstable SMP. All rights reserved.</p>
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg">
+    <div class="hero-blob hero-blob-1"></div>
+    <div class="hero-blob hero-blob-2"></div>
+    <div class="hero-grid"></div>
   </div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      <span style="color:var(--green)">Online</span>
+      <span style="color:var(--gray2)">|</span>
+      <span id="player-count" style="color:var(--gray)"><span style="color:var(--white);font-weight:600">—</span>/150</span>
+    </div>
+    <h1 class="hero-title">
+      <span class="w">UNSTABLE</span><br><span class="g">SMP</span>
+    </h1>
+    <p class="hero-sub">A hardcore survival experience. Build, fight, conquer. No second chances.</p>
+    <div>
+      <div class="ip-box" onclick="copyIP()">
+        <div style="text-align:left">
+          <div class="ip-label">Server IP</div>
+          <div class="ip-addr">play.unstablenet.xyz</div>
+        </div>
+        <div class="ip-icon">
+          <svg id="copy-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+        </div>
+      </div>
+      <p class="ip-hint" id="copy-hint">Click to copy</p>
+    </div>
+  </div>
+</section>
+
+<!-- DISCORD -->
+<section style="padding-top:0;padding-bottom:5rem;padding-left:1.5rem;padding-right:1.5rem;">
+  <div class="container reveal">
+    <div class="discord-card">
+      <div class="discord-info">
+        <div class="section-tag" style="margin-bottom:0.75rem;">
+          <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>
+          Community
+        </div>
+        <h2>Join Our Discord</h2>
+        <p>Connect with the community, get support, and stay updated on announcements.</p>
+        <div class="discord-stats">
+          <div class="discord-stat">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            4800+ Members
+          </div>
+          <div class="discord-stat">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Active 24/7
+          </div>
+        </div>
+        <a href="https://discord.gg/WAYVDhEUJf" target="_blank" class="discord-btn">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Join Discord
+        </a>
+      </div>
+      <div class="discord-logo">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STAFF -->
+<section>
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Team
+      </div>
+      <div class="section-title">Meet Our Staff</div>
+      <div class="section-desc">The dedicated team keeping Unstable SMP running.</div>
+    </div>
+    <div class="staff-grid reveal" id="staff-grid"></div>
+  </div>
+</section>
+
+<!-- CHANGELOG -->
+<section style="background:var(--bg2);">
+  <div class="container">
+    <div class="section-header reveal">
+      <div class="section-tag">
+        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        Updates
+      </div>
+      <div class="section-title">Changelog</div>
+      <div class="section-desc">Latest updates, fixes, and improvements.</div>
+    </div>
+    <div class="changelog-list reveal" id="changelog-list"></div>
+  </div>
+</section>
+
+<footer>
+  <p>Made with <span style="color:#84cc16">♥</span> by KeyLymPi</p>
+  <p class="sub">© 2026 Unstable SMP · <a href="admin.html" style="color:var(--gray2);text-decoration:underline">Admin</a></p>
 </footer>
 
 <script>
-  // Mobile menu toggle
-  document.getElementById('menu-btn').addEventListener('click', () => {
-    document.getElementById('mobile-menu').classList.toggle('hidden');
+  // ── Hamburger ──
+  document.getElementById('hamburger').addEventListener('click', () => {
+    document.getElementById('mobile-menu').classList.toggle('open');
   });
 
-  // Copy IP
+  // ── Copy IP ──
   function copyIP() {
     navigator.clipboard.writeText('play.unstablenet.xyz').then(() => {
-      const label = document.getElementById('copy-label');
-      const icon = document.getElementById('copy-icon');
-      label.textContent = 'Copied!';
-      label.style.color = '#a78bfa';
-      icon.innerHTML = '<polyline points="20 6 9 17 4 12"/>';
+      document.getElementById('copy-hint').textContent = 'Copied!';
+      document.getElementById('copy-hint').style.color = 'var(--purple)';
+      document.getElementById('copy-icon').innerHTML = '<polyline points="20 6 9 17 4 12"/>';
       setTimeout(() => {
-        label.textContent = 'Click to copy';
-        label.style.color = '';
-        icon.innerHTML = '<rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>';
+        document.getElementById('copy-hint').textContent = 'Click to copy';
+        document.getElementById('copy-hint').style.color = '';
+        document.getElementById('copy-icon').innerHTML = '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>';
       }, 2000);
     });
   }
 
-  // Scroll reveal
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.1 });
-  document.querySelectorAll('.reveal, .reveal-left').forEach(el => observer.observe(el));
-
-  // Fetch player count from Minecraft server status API
+  // ── Player count ──
   fetch('https://api.mcsrvstat.us/3/play.unstablenet.xyz')
     .then(r => r.json())
-    .then(data => {
+    .then(d => {
       const el = document.getElementById('player-count');
-      if (data && data.players) {
-        el.innerHTML = `<span class="text-white font-semibold">${data.players.online}</span><span class="text-gray-500">/${data.players.max}</span>`;
-      } else {
-        el.innerHTML = `<span class="text-white font-semibold">0</span><span class="text-gray-500">/150</span>`;
-      }
-    })
-    .catch(() => {
-      document.getElementById('player-count').innerHTML = '<span class="text-white font-semibold">0</span><span class="text-gray-500">/150</span>';
-    });
-</script>
+      const on = d?.players?.online ?? 0, max = d?.players?.max ?? 150;
+      el.innerHTML = `<span style="color:var(--white);font-weight:600">${on}</span>/${max}`;
+    }).catch(() => {});
 
+  // ── Default data ──
+  const DEFAULT_STAFF = [
+    { name:'4peak', role:'👑 Owner', color:'yellow', img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4' },
+    { name:'blazeybean', role:'⭐ Co-Owner', color:'green', img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4' },
+    { name:'Caleb', role:'🛡️ Manager', color:'orange', img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4' }
+  ];
+  const DEFAULT_CHANGELOG = [
+    { version:'v2.3', date:'', title:'New Crate Rewards', desc:'Added new crate rewards and performance improvements.' },
+    { version:'v2.2', date:'', title:'Combat Balancing & Bug Fixes', desc:'Combat balancing adjustments and bug fixes.' }
+  ];
+
+  function getStaff() {
+    try { return JSON.parse(localStorage.getItem('usmp_staff')) || DEFAULT_STAFF; } catch(e) { return DEFAULT_STAFF; }
+  }
+  function getChangelog() {
+    try { return JSON.parse(localStorage.getItem('usmp_changelog')) || DEFAULT_CHANGELOG; } catch(e) { return DEFAULT_CHANGELOG; }
+  }
+
+  // ── Render staff ──
+  function renderStaff() {
+    const staff = getStaff();
+    const grid = document.getElementById('staff-grid');
+    if (!staff.length) { grid.innerHTML = '<p class="staff-empty">No staff members yet.</p>'; return; }
+    grid.innerHTML = staff.map(s => `
+      <div class="staff-card ${s.color}">
+        <div class="staff-avatar-wrap">
+          <div class="staff-avatar-inner">
+            <img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">
+          </div>
+        </div>
+        <div>
+          <div class="staff-name">${s.name}</div>
+          <div class="staff-role">${s.role}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── Render changelog ──
+  function renderChangelog() {
+    const log = getChangelog();
+    const list = document.getElementById('changelog-list');
+    if (!log.length) { list.innerHTML = '<p class="changelog-empty">No updates yet.</p>'; return; }
+    list.innerHTML = log.map(c => `
+      <div class="changelog-item">
+        <div class="changelog-icon">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+        </div>
+        <div>
+          <div class="changelog-meta">
+            <span class="changelog-ver">${c.version}</span>
+            ${c.date ? `<span class="changelog-date">${c.date}</span>` : ''}
+          </div>
+          <div class="changelog-title">${c.title}</div>
+          ${c.desc ? `<div class="changelog-desc">${c.desc}</div>` : ''}
+        </div>
+      </div>`).join('');
+  }
+
+  renderStaff();
+  renderChangelog();
+
+  // ── Scroll reveal ──
+  const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), { threshold: 0.08 });
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+</script>
 </body>
 </html>
