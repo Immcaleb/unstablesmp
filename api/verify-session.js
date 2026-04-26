@@ -1,7 +1,7 @@
 // api/verify-session.js
 // Called by admin.html on load to verify the session cookie is valid and unexpired.
 
-const ALLOWED_IDS = ['849599398043844619'];
+const ALLOWED_IDS = ['849599398043844619', '964672784829648946'];
 
 export default async function handler(req, res) {
   const sessionSecret = process.env.SESSION_SECRET;

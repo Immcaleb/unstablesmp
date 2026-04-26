@@ -279,7 +279,7 @@
   // ── Auth ──
   function loginWithDiscord() {
     const CLIENT_ID    = '1497654556006551562';
-    const REDIRECT_URI = 'https://info.unstablenet.xyz/api/auth';
+    const REDIRECT_URI = 'https://info.unstablenet.xyz/api/discord-callback';
     const url = `https://discord.com/oauth2/authorize?client_id=${CLIENT_ID}&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&response_type=code&scope=identify`;
     window.location.href = url;
   }

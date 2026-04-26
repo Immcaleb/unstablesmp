@@ -1,9 +1,7 @@
 {
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    { "source": "/api/discord-callback", "destination": "/api/discord-callback" },
-    { "source": "/api/verify-session", "destination": "/api/verify-session" },
-    { "source": "/api/logout", "destination": "/api/logout" }
-  ]
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
+  "cleanUrls": true,
+  "trailingSlash": false
 }

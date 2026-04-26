@@ -2,7 +2,7 @@
 // Vercel serverless function — exchanges Discord OAuth code for user info,
 // checks against the approved user ID list, and sets a session cookie.
 
-const ALLOWED_IDS = ['849599398043844619'];
+const ALLOWED_IDS = ['849599398043844619', '964672784829648946'];
 
 export default async function handler(req, res) {
   const { code, state } = req.query;

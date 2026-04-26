@@ -1,16 +1,12 @@
 // api/auth.js — Discord OAuth2 callback handler
-// Vercel serverless function
 
-const ALLOWED_IDS = ['849599398043844619'];
+const ALLOWED_IDS = ['849599398043844619', '964672784829648946'];
 
 export default async function handler(req, res) {
   const { code, error } = req.query;
 
-  // CORS headers
-  res.setHeader('Access-Control-Allow-Origin', '*');
-
   if (error) {
-    return res.redirect('/?auth=denied');
+    return res.redirect('/admin.html?auth=denied');
   }
 
   if (!code) {
@@ -19,7 +15,7 @@ export default async function handler(req, res) {
 
   const CLIENT_ID     = process.env.DISCORD_CLIENT_ID;
   const CLIENT_SECRET = process.env.DISCORD_CLIENT_SECRET;
-  const REDIRECT_URI  = process.env.DISCORD_REDIRECT_URI; // e.g. https://yourdomain.vercel.app/api/auth
+  const REDIRECT_URI  = process.env.DISCORD_REDIRECT_URI;
 
   if (!CLIENT_ID || !CLIENT_SECRET || !REDIRECT_URI) {
     return res.status(500).json({ error: 'Missing environment variables' });
@@ -51,12 +47,15 @@ export default async function handler(req, res) {
     });
     const user = await userRes.json();
 
+    console.log('Login attempt - Discord ID:', user.id, 'Username:', user.username);
+
     // 3. Check if user ID is allowed
     if (!ALLOWED_IDS.includes(user.id)) {
-      return res.redirect('/admin.html?auth=denied');
+      // Redirect with the actual ID so we can debug
+      return res.redirect(`/admin.html?auth=denied&uid=${user.id}`);
     }
 
-    // 4. Build a signed session token (simple base64 payload — good enough for a static site)
+    // 4. Build session token
     const session = Buffer.from(JSON.stringify({
       id:       user.id,
       username: user.username,
@@ -64,7 +63,7 @@ export default async function handler(req, res) {
       expires:  Date.now() + 1000 * 60 * 60 * 24, // 24 hours
     })).toString('base64');
 
-    // 5. Redirect to admin with session token in URL fragment (never hits server logs)
+    // 5. Redirect to admin with session token
     return res.redirect(`/admin.html#token=${session}`);
 
   } catch (err) {
