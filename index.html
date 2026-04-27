@@ -6,593 +6,593 @@
   <title>Unstable SMP</title>
   <link rel="icon" href="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    :root {
-      --bg: #0a0a14;
-      --bg2: #10102a;
-      --bg3: #16163a;
-      --p1: #a855f7;
-      --p2: #7c3aed;
-      --pink: #ec4899;
-      --cyan: #06b6d4;
-      --green: #22c55e;
-      --yellow: #eab308;
-      --orange: #f97316;
-      --red: #ef4444;
-      --blue: #3b82f6;
-      --white: #f8f4ff;
-      --gray: #8878aa;
-      --gray2: #2d2a4a;
-      --discord: #5865F2;
+    @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700&display=swap');
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#0d0b1e;
+      --card:#1a1835;
+      --card2:#201d3d;
+      --purple:#9b5cf6;
+      --pink:#e040fb;
+      --cyan:#00e5ff;
+      --green:#00e676;
+      --yellow:#ffd600;
+      --orange:#ff6d00;
+      --gold:#ffc400;
+      --white:#f0eaff;
+      --gray:#9090b8;
+      --border:rgba(155,92,246,.2);
     }
-    html { scroll-behavior: smooth; }
-    body { background: var(--bg); color: var(--white); font-family: 'Space Grotesk', sans-serif; line-height: 1.6; overflow-x: hidden; }
-    a { color: inherit; text-decoration: none; }
-    img { display: block; }
+    html{scroll-behavior:smooth}
+    body{background:var(--bg);color:var(--white);font-family:'Outfit',sans-serif;line-height:1.5;overflow-x:hidden}
+    a{color:inherit;text-decoration:none}
 
-    /* ══ ANIMATED BG CANVAS ══ */
-    #bg-canvas { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    /* ── ANIMATED BG ── */
+    #bg-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.6}
 
-    /* ══ NAV ══ */
-    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 1rem 1.5rem; }
-    .nav-inner { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; background: rgba(10,10,20,0.75); backdrop-filter: blur(24px); border: 1px solid rgba(168,85,247,0.2); border-radius: 1rem; padding: 0.75rem 1.5rem; }
-    .nav-logo { display: flex; align-items: center; gap: 0.6rem; }
-    .nav-logo img { width: 28px; height: 28px; border-radius: 6px; }
-    .nav-logo span { font-weight: 800; font-size: 1.05rem; background: linear-gradient(135deg, #fff, #a855f7, #ec4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .nav-links { display: flex; gap: 0.25rem; }
-    .nav-links a { padding: 0.4rem 1rem; border-radius: 0.6rem; font-size: 0.875rem; font-weight: 600; color: var(--gray); transition: all 0.2s; }
-    .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.07); }
-    .nav-links a.active { background: rgba(168,85,247,0.2); color: var(--p1); border: 1px solid rgba(168,85,247,0.3); }
-    .nav-hamburger { display: none; background: none; border: none; color: var(--gray); cursor: pointer; }
-    .nav-mobile { display: none; flex-direction: column; gap: 0.25rem; padding-top: 0.75rem; margin-top: 0.75rem; border-top: 1px solid rgba(168,85,247,0.2); }
-    .nav-mobile.open { display: flex; }
-    .nav-mobile a { padding: 0.5rem 0.75rem; border-radius: 0.5rem; font-size: 0.875rem; color: var(--gray); }
-    .nav-mobile a.active { color: var(--p1); background: rgba(168,85,247,0.15); }
-    @media (max-width: 640px) { .nav-links { display: none; } .nav-hamburger { display: block; } }
+    /* ── NAV ── */
+    nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:.8rem 1.5rem}
+    .nav-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;background:rgba(13,11,30,.85);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:1rem;padding:.6rem 1.5rem}
+    .nav-logo{display:flex;align-items:center;gap:.6rem}
+    .nav-logo img{width:30px;height:30px;border-radius:7px}
+    .nav-logo span{font-weight:900;font-size:1.1rem;background:linear-gradient(135deg,#c084fc,#e040fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .nav-links{display:flex;gap:.2rem}
+    .nav-links a{padding:.4rem 1rem;border-radius:.6rem;font-size:.875rem;font-weight:700;color:var(--gray);transition:all .2s}
+    .nav-links a:hover,.nav-links a.active{color:var(--white);background:rgba(155,92,246,.15)}
+    .ham{display:none;background:none;border:none;color:var(--gray);cursor:pointer;padding:.25rem}
+    .mob{display:none;flex-direction:column;gap:.2rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid var(--border)}
+    .mob.open{display:flex}
+    .mob a{padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;color:var(--gray);font-weight:600}
+    @media(max-width:640px){.nav-links{display:none}.ham{display:block}}
 
-    /* ══ HERO ══ */
-    .hero { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 8rem 1.5rem 5rem; overflow: hidden; }
-    .hero-content { text-align: center; max-width: 900px; position: relative; z-index: 2; }
-    .hero-badge { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.45rem 1.1rem; border-radius: 9999px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); font-size: 0.8rem; margin-bottom: 2rem; animation: fadeUp 0.6s ease both; }
-    .pulse-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 12px var(--green); animation: pulse 1.8s ease-in-out infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-    .hero-title { font-size: clamp(4rem, 10vw, 8rem); font-weight: 800; line-height: 0.9; letter-spacing: -0.04em; margin-bottom: 1.5rem; animation: fadeUp 0.6s 0.1s ease both; }
-    .hero-title .t1 { display: block; color: var(--white); }
-    .hero-title .t2 { display: block; background: linear-gradient(135deg, #a855f7, #ec4899, #f97316); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero-sub { color: var(--gray); font-size: 1.1rem; margin-bottom: 3rem; max-width: 500px; margin-left: auto; margin-right: auto; animation: fadeUp 0.6s 0.2s ease both; }
-    .hero-cta { animation: fadeUp 0.6s 0.3s ease both; }
+    /* ── HERO ── */
+    .hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:7rem 1.5rem 3rem;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border-radius:9999px;background:rgba(0,230,118,.08);border:1px solid rgba(0,230,118,.2);font-size:.78rem;font-weight:700;color:var(--green);margin-bottom:1.5rem}
+    .pdot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 1.6s ease-in-out infinite;flex-shrink:0}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+    .hero h1{font-size:clamp(4rem,12vw,9rem);font-weight:900;line-height:.88;letter-spacing:-.04em;margin-bottom:1.25rem}
+    .h1a{display:block;color:var(--white);text-shadow:0 0 80px rgba(155,92,246,.3)}
+    .h1b{display:block;background:linear-gradient(135deg,#c084fc,#e040fb,#ff6d00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .hero-sub{color:var(--gray);font-size:1.05rem;max-width:420px;margin:0 auto}
 
-    /* ══ SECTION 1: IP + DISCORD SPLIT ══ */
-    .split-section { position: relative; z-index: 1; padding: 0 1.5rem 5rem; }
-    .split-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
-    @media (max-width: 768px) { .split-grid { grid-template-columns: 1fr; } }
+    /* ════════════════════════
+       HERO BOTTOM BAR  (Crystal Chaos style)
+    ════════════════════════ */
+    .hero-bar-wrap{position:relative;z-index:1;padding:0 1.5rem 3rem}
+    .hero-bar{max-width:1200px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:1.5rem;padding:1.5rem 2.5rem;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:2rem;position:relative;overflow:hidden}
+    .hero-bar::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(155,92,246,.06),rgba(224,64,251,.04));pointer-events:none}
+    @media(max-width:768px){
+      .hero-bar{grid-template-columns:1fr;text-align:center;padding:1.5rem}
+      .bar-right{justify-content:center}
+    }
 
-    /* IP Card */
-    .ip-card { background: var(--bg2); border: 1px solid rgba(168,85,247,0.25); border-radius: 1.5rem; padding: 2.5rem; position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: center; }
-    .ip-card::before { content:''; position:absolute; top:-40px; right:-40px; width:180px; height:180px; background:radial-gradient(circle, rgba(168,85,247,0.2), transparent); border-radius:50%; pointer-events:none; }
-    .ip-card-label { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--p1); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
-    .ip-addr { font-family: 'JetBrains Mono', monospace; font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 700; color: var(--white); margin-bottom: 1rem; }
-    .copy-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.65rem 1.4rem; border-radius: 0.75rem; background: linear-gradient(135deg, var(--p1), var(--p2)); color: white; font-weight: 700; font-size: 0.875rem; cursor: pointer; border: none; transition: all 0.2s; width: fit-content; }
-    .copy-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(168,85,247,0.4); }
-    .ip-copy-hint { font-size: 0.78rem; color: var(--gray); margin-top: 0.75rem; }
-    .ip-stats { display: flex; gap: 1.5rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--gray2); flex-wrap: wrap; }
-    .ip-stat { text-align: center; }
-    .ip-stat-val { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: linear-gradient(135deg, var(--p1), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .ip-stat-label { font-size: 0.72rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.08em; }
+    /* Left — IP */
+    .bar-left{display:flex;flex-direction:column;gap:.75rem}
+    .bar-playnow{font-size:1.6rem;font-weight:900;letter-spacing:.02em;color:var(--white)}
+    .bar-ip-row{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap}
+    .bar-copy-btn{display:inline-flex;align-items:center;gap:.5rem;padding:.55rem 1.2rem;border-radius:.75rem;background:linear-gradient(135deg,#9b5cf6,#e040fb);color:#fff;font-weight:800;font-size:.875rem;border:none;cursor:pointer;transition:all .2s;position:relative}
+    .bar-copy-btn:hover{transform:translateY(-2px);box-shadow:0 6px 24px rgba(155,92,246,.45)}
+    .player-bubble{position:absolute;top:-10px;right:-10px;min-width:28px;height:28px;background:linear-gradient(135deg,#e040fb,#9b5cf6);border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:800;color:#fff;padding:0 6px;border:2px solid var(--card)}
+    .bar-ip-text{font-family:'JetBrains Mono',monospace;font-size:.95rem;font-weight:700;color:var(--gray)}
+    .copy-hint{font-size:.72rem;color:var(--gray);margin-top:.1rem;transition:color .2s}
 
-    /* Discord Card */
-    .discord-card { background: var(--bg2); border: 1px solid rgba(88,101,242,0.3); border-radius: 1.5rem; padding: 2.5rem; position: relative; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 1.25rem; }
-    .discord-card::before { content:''; position:absolute; inset:0; background: radial-gradient(circle at 50% 0%, rgba(88,101,242,0.12), transparent 60%); pointer-events:none; }
-    .discord-logo-wrap { width: 80px; height: 80px; background: rgba(88,101,242,0.15); border: 1px solid rgba(88,101,242,0.3); border-radius: 1.25rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; animation: float 4s ease-in-out infinite; }
-    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
-    .discord-logo-wrap svg { width: 44px; height: 44px; color: #818cf8; }
-    .discord-title { font-size: 1.4rem; font-weight: 800; color: var(--white); }
-    .discord-count { font-size: 2.2rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; background: linear-gradient(135deg, #818cf8, #a5b4fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .discord-count-label { font-size: 0.78rem; color: var(--gray); text-transform: uppercase; letter-spacing: 0.1em; margin-top: -0.5rem; }
-    .discord-join-btn { display: inline-flex; align-items: center; gap: 0.6rem; padding: 0.75rem 2rem; border-radius: 0.75rem; background: var(--discord); color: white; font-weight: 700; font-size: 0.95rem; transition: all 0.2s; border: none; cursor: pointer; }
-    .discord-join-btn:hover { background: #4752c4; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(88,101,242,0.4); }
+    /* Center — Logo */
+    .bar-center{display:flex;align-items:center;justify-content:center}
+    .bar-logo-wrap{width:120px;height:120px;display:flex;align-items:center;justify-content:center;flex-shrink:0;filter:drop-shadow(0 0 24px rgba(155,92,246,.5))}
+    .bar-logo-wrap img{width:100%;height:100%;object-fit:contain;border-radius:1rem}
 
-    /* ══ SECTION 2: BANNER ══ */
-    .banner-section { position: relative; z-index: 1; padding: 0 1.5rem 5rem; }
-    .banner-wrap { max-width: 1200px; margin: 0 auto; }
-    .banner-box { border-radius: 1.5rem; padding: 2.5rem 3rem; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; }
-    .banner-box.hidden-banner { display: none; }
-    .banner-bg-1 { background: linear-gradient(135deg, rgba(168,85,247,0.3) 0%, rgba(236,72,153,0.2) 50%, rgba(249,115,22,0.2) 100%); border: 1px solid rgba(168,85,247,0.3); }
-    .banner-bg-2 { background: linear-gradient(135deg, rgba(6,182,212,0.25) 0%, rgba(59,130,246,0.2) 100%); border: 1px solid rgba(6,182,212,0.3); }
-    .banner-bg-3 { background: linear-gradient(135deg, rgba(234,179,8,0.2) 0%, rgba(249,115,22,0.25) 100%); border: 1px solid rgba(234,179,8,0.3); }
-    .banner-shimmer { position: absolute; inset: 0; background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.04) 50%, transparent 60%); animation: shimmer 3s ease-in-out infinite; pointer-events: none; }
-    @keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
-    .banner-emoji { font-size: 3rem; line-height: 1; flex-shrink: 0; animation: wiggle 2s ease-in-out infinite; }
-    @keyframes wiggle { 0%,100%{transform:rotate(-5deg)} 50%{transform:rotate(5deg)} }
-    .banner-text { flex: 1; min-width: 200px; }
-    .banner-title { font-size: clamp(1.2rem, 3vw, 1.8rem); font-weight: 800; color: var(--white); margin-bottom: 0.3rem; }
-    .banner-desc { color: rgba(255,255,255,0.7); font-size: 0.95rem; }
-    .banner-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.75rem; flex-shrink: 0; }
-    .countdown-wrap { display: flex; gap: 0.5rem; }
-    .countdown-unit { text-align: center; background: rgba(0,0,0,0.3); border-radius: 0.5rem; padding: 0.5rem 0.75rem; min-width: 52px; }
-    .countdown-num { font-size: 1.5rem; font-weight: 800; font-family: 'JetBrains Mono', monospace; color: var(--white); line-height: 1; }
-    .countdown-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgba(255,255,255,0.5); margin-top: 0.2rem; }
-    .banner-btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1.4rem; border-radius: 0.6rem; background: rgba(255,255,255,0.15); backdrop-filter: blur(8px); color: white; font-weight: 700; font-size: 0.875rem; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.2); cursor: pointer; text-decoration: none; }
-    .banner-btn:hover { background: rgba(255,255,255,0.25); }
+    /* Right — Discord */
+    .bar-right{display:flex;align-items:center;justify-content:flex-end;gap:1rem}
+    .bar-discord-btn{display:inline-flex;align-items:center;gap:.75rem;padding:.7rem 1.4rem;border-radius:.85rem;background:#5865F2;color:#fff;font-weight:800;font-size:.875rem;transition:all .2s;position:relative;flex-shrink:0}
+    .bar-discord-btn:hover{background:#4752c4;transform:translateY(-2px);box-shadow:0 6px 24px rgba(88,101,242,.45)}
+    .discord-bubble{position:absolute;top:-10px;right:-10px;min-width:28px;height:28px;background:linear-gradient(135deg,#22d3ee,#5865F2);border-radius:9999px;display:flex;align-items:center;justify-content:center;font-size:.68rem;font-weight:800;color:#fff;padding:0 6px;border:2px solid var(--card)}
+    .bar-dc-info{text-align:right}
+    .bar-dc-title{font-size:1.6rem;font-weight:900;color:var(--white)}
+    .bar-dc-sub{font-size:.8rem;color:#818cf8;font-weight:700}
 
-    /* ══ SECTION 3: STAFF ══ */
-    .section { position: relative; z-index: 1; padding: 0 1.5rem 6rem; }
-    .section-inner { max-width: 1200px; margin: 0 auto; }
-    .section-header { text-align: center; margin-bottom: 3rem; }
-    .section-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.9rem; border-radius: 9999px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.75rem; }
-    .eyebrow-purple { background: rgba(168,85,247,0.15); border: 1px solid rgba(168,85,247,0.3); color: var(--p1); }
-    .eyebrow-cyan { background: rgba(6,182,212,0.15); border: 1px solid rgba(6,182,212,0.3); color: var(--cyan); }
-    .section-title { font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 800; color: var(--white); margin-bottom: 0.5rem; }
-    .section-desc { color: var(--gray); font-size: 0.95rem; max-width: 440px; margin: 0 auto; }
+    /* ════════════════════════
+       BANNER SECTION
+    ════════════════════════ */
+    .banner-sec{position:relative;z-index:1;padding:0 1.5rem 4rem}
+    #banner-wrap{max-width:1200px;margin:0 auto}
+    .banner-card{border-radius:1.5rem;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,.08)}
+    .banner-inner{padding:2.5rem 3rem;display:grid;grid-template-columns:1fr auto;align-items:center;gap:2rem;position:relative;z-index:1}
+    @media(max-width:640px){.banner-inner{grid-template-columns:1fr;text-align:center}}
+    .banner-bg-stripe{position:absolute;inset:0;background:repeating-linear-gradient(45deg,rgba(255,255,255,.025) 0,rgba(255,255,255,.025) 1px,transparent 1px,transparent 24px)}
+    .banner-glow{position:absolute;top:-80px;right:10%;width:360px;height:360px;border-radius:50%;filter:blur(80px);opacity:.4;pointer-events:none}
+    .b-event .banner-glow{background:radial-gradient(circle,#f97316,#9b5cf6)}
+    .b-warn  .banner-glow{background:radial-gradient(circle,#fbbf24,#f97316)}
+    .b-info  .banner-glow{background:radial-gradient(circle,#22d3ee,#3b82f6)}
+    .b-green .banner-glow{background:radial-gradient(circle,#4ade80,#06b6d4)}
+    .b-event{background:linear-gradient(135deg,#1a0b2e,#3b1060)}
+    .b-warn {background:linear-gradient(135deg,#1c1000,#3d2200)}
+    .b-info {background:linear-gradient(135deg,#001a2e,#003d5c)}
+    .b-green{background:linear-gradient(135deg,#001a0d,#003d1f)}
+    .banner-tag{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .8rem;border-radius:9999px;background:rgba(255,255,255,.15);font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+    .banner-title{font-size:clamp(1.5rem,4vw,2.4rem);font-weight:900;line-height:1.1;margin-bottom:.5rem;text-shadow:0 2px 20px rgba(0,0,0,.4)}
+    .banner-desc{font-size:.95rem;opacity:.85;max-width:520px;font-weight:500}
+    .banner-countdown{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-top:1.25rem}
+    .cd-block{background:rgba(0,0,0,.4);border-radius:.75rem;padding:.65rem .9rem;min-width:64px;text-align:center;backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.1)}
+    .cd-num{font-family:'JetBrains Mono',monospace;font-size:1.8rem;font-weight:700;line-height:1}
+    .cd-label{font-size:.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;opacity:.7;margin-top:.15rem}
+    .cd-sep{font-size:1.4rem;font-weight:900;opacity:.5}
+    .banner-btn-link{display:inline-flex;align-items:center;gap:.4rem;padding:.6rem 1.25rem;border-radius:.75rem;background:rgba(255,255,255,.18);color:#fff;font-weight:700;font-size:.875rem;border:1px solid rgba(255,255,255,.25);transition:all .2s;margin-top:1rem;backdrop-filter:blur(8px)}
+    .banner-btn-link:hover{background:rgba(255,255,255,.28)}
 
-    /* Staff grid */
-    .staff-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
-    .staff-card { background: var(--bg2); border-radius: 1.25rem; padding: 1.5rem; display: flex; align-items: center; gap: 1.1rem; transition: all 0.3s; border: 1px solid var(--gray2); position: relative; overflow: hidden; }
-    .staff-card::before { content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius: 1.25rem 1.25rem 0 0; }
-    .staff-card.yellow::before { background: linear-gradient(90deg, #eab308, #f97316); }
-    .staff-card.green::before  { background: linear-gradient(90deg, #22c55e, #10b981); }
-    .staff-card.orange::before { background: linear-gradient(90deg, #f97316, #ef4444); }
-    .staff-card.purple::before { background: linear-gradient(90deg, #a855f7, #7c3aed); }
-    .staff-card.red::before    { background: linear-gradient(90deg, #ef4444, #dc2626); }
-    .staff-card.blue::before   { background: linear-gradient(90deg, #3b82f6, #06b6d4); }
-    .staff-card.yellow { border-color: rgba(234,179,8,0.25); background: linear-gradient(135deg, rgba(234,179,8,0.06), var(--bg2)); }
-    .staff-card.green  { border-color: rgba(34,197,94,0.25);  background: linear-gradient(135deg, rgba(34,197,94,0.06), var(--bg2)); }
-    .staff-card.orange { border-color: rgba(249,115,22,0.25); background: linear-gradient(135deg, rgba(249,115,22,0.06), var(--bg2)); }
-    .staff-card.purple { border-color: rgba(168,85,247,0.25); background: linear-gradient(135deg, rgba(168,85,247,0.06), var(--bg2)); }
-    .staff-card.red    { border-color: rgba(239,68,68,0.25);  background: linear-gradient(135deg, rgba(239,68,68,0.06), var(--bg2)); }
-    .staff-card.blue   { border-color: rgba(59,130,246,0.25); background: linear-gradient(135deg, rgba(59,130,246,0.06), var(--bg2)); }
-    .staff-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.4); }
-    .staff-avatar-wrap { width: 56px; height: 56px; border-radius: 0.75rem; padding: 2px; flex-shrink: 0; }
-    .staff-card.yellow .staff-avatar-wrap { background: linear-gradient(135deg, #eab308, #f97316); }
-    .staff-card.green  .staff-avatar-wrap { background: linear-gradient(135deg, #22c55e, #10b981); }
-    .staff-card.orange .staff-avatar-wrap { background: linear-gradient(135deg, #f97316, #ef4444); }
-    .staff-card.purple .staff-avatar-wrap { background: linear-gradient(135deg, #a855f7, #7c3aed); }
-    .staff-card.red    .staff-avatar-wrap { background: linear-gradient(135deg, #ef4444, #dc2626); }
-    .staff-card.blue   .staff-avatar-wrap { background: linear-gradient(135deg, #3b82f6, #06b6d4); }
-    .staff-avatar-inner { width: 100%; height: 100%; border-radius: 0.6rem; background: var(--bg); overflow: hidden; }
-    .staff-avatar-inner img { width: 100%; height: 100%; object-fit: cover; }
-    .staff-name { font-weight: 800; font-size: 1.05rem; }
-    .staff-role { font-size: 0.8rem; font-weight: 600; margin-top: 0.15rem; }
-    .staff-card.yellow .staff-role { color: #eab308; }
-    .staff-card.green  .staff-role { color: #22c55e; }
-    .staff-card.orange .staff-role { color: #f97316; }
-    .staff-card.purple .staff-role { color: #a855f7; }
-    .staff-card.red    .staff-role { color: #ef4444; }
-    .staff-card.blue   .staff-role { color: #3b82f6; }
+    /* ════════════════════════
+       RANKS SECTION
+    ════════════════════════ */
+    .sec{position:relative;z-index:1;padding:5rem 1.5rem}
+    .sec-alt{background:linear-gradient(180deg,transparent,rgba(155,92,246,.04),transparent)}
+    .sec-head{text-align:center;margin-bottom:3rem}
+    .sec-tag{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .9rem;border-radius:9999px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.75rem}
+    .t-purple{background:rgba(155,92,246,.12);border:1px solid rgba(155,92,246,.3);color:#c084fc}
+    .t-gold{background:rgba(255,196,0,.1);border:1px solid rgba(255,196,0,.3);color:#ffc400}
+    .t-pink{background:rgba(236,72,153,.12);border:1px solid rgba(236,72,153,.3);color:#f472b6}
+    .t-cyan{background:rgba(34,211,238,.12);border:1px solid rgba(34,211,238,.3);color:#22d3ee}
+    .sec-title{font-size:clamp(1.8rem,4vw,2.6rem);font-weight:900;margin-bottom:.5rem}
+    .sec-sub{color:var(--gray);font-size:.95rem;max-width:460px;margin:0 auto}
 
-    /* ══ SECTION 4: CHANGELOG ══ */
-    .changelog-timeline { display: flex; flex-direction: column; gap: 0; position: relative; max-width: 800px; margin: 0 auto; }
-    .changelog-timeline::before { content:''; position:absolute; left: 20px; top: 0; bottom: 0; width: 2px; background: linear-gradient(to bottom, var(--p1), var(--pink), transparent); }
-    .changelog-entry { display: flex; gap: 1.5rem; padding-bottom: 2rem; position: relative; }
-    .changelog-entry:last-child { padding-bottom: 0; }
-    .changelog-dot-wrap { flex-shrink: 0; display: flex; flex-direction: column; align-items: center; padding-top: 0.25rem; }
-    .changelog-dot { width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 3px solid var(--bg); position: relative; z-index: 1; }
-    .changelog-dot.latest { background: linear-gradient(135deg, var(--p1), var(--pink)); box-shadow: 0 0 20px rgba(168,85,247,0.5); }
-    .changelog-dot.older { background: var(--bg3); border-color: var(--gray2); }
-    .changelog-body { flex: 1; background: var(--bg2); border-radius: 1.25rem; padding: 1.5rem; border: 1px solid var(--gray2); transition: border-color 0.2s; margin-bottom: 0; }
-    .changelog-body:hover { border-color: rgba(168,85,247,0.3); }
-    .changelog-header { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem; flex-wrap: wrap; }
-    .changelog-ver { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; background: rgba(168,85,247,0.15); color: var(--p1); padding: 0.2rem 0.6rem; border-radius: 0.4rem; border: 1px solid rgba(168,85,247,0.3); }
-    .changelog-date { font-size: 0.78rem; color: var(--gray); }
-    .new-badge { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; background: linear-gradient(135deg, var(--p1), var(--pink)); color: white; padding: 0.15rem 0.5rem; border-radius: 9999px; }
-    .changelog-title { font-size: 1.05rem; font-weight: 700; color: var(--white); margin-bottom: 0.4rem; }
-    .changelog-desc { font-size: 0.875rem; color: var(--gray); line-height: 1.6; }
+    /* Rank cards */
+    .ranks-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:1.5rem;max-width:800px;margin:0 auto}
+    .rank-card{border-radius:1.5rem;overflow:hidden;position:relative;transition:all .35s;cursor:default}
+    .rank-card:hover{transform:translateY(-6px)}
+    .rank-card-inner{padding:2rem 2.25rem 2.25rem;position:relative;z-index:1}
+    .rank-card-bg{position:absolute;inset:0;z-index:0}
 
-    /* ══ FOOTER ══ */
-    footer { position: relative; z-index: 1; padding: 2.5rem 1.5rem; border-top: 1px solid var(--gray2); text-align: center; }
-    footer p { color: var(--gray); font-size: 0.85rem; }
-    footer .sub { font-size: 0.75rem; color: rgba(255,255,255,0.2); margin-top: 0.4rem; }
+    /* Unstable rank */
+    .rank-unstable .rank-card-bg{background:linear-gradient(145deg,#1a0533,#2d0b52,#3b0f6e);border:2px solid rgba(155,92,246,.4)}
+    .rank-unstable:hover{box-shadow:0 20px 60px rgba(155,92,246,.3)}
+    .rank-unstable .rank-card-bg::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(155,92,246,.3),transparent);border-radius:50%}
 
-    /* ══ REVEAL ══ */
-    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.65s ease, transform 0.65s ease; }
-    .reveal.on { opacity: 1; transform: none; }
+    /* Legend rank */
+    .rank-legend .rank-card-bg{background:linear-gradient(145deg,#1a0f00,#2d1e00,#3d2b00);border:2px solid rgba(255,196,0,.35)}
+    .rank-legend:hover{box-shadow:0 20px 60px rgba(255,196,0,.25)}
+    .rank-legend .rank-card-bg::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,196,0,.25),transparent);border-radius:50%}
+
+    .rank-icon{width:56px;height:56px;border-radius:1rem;display:flex;align-items:center;justify-content:center;font-size:1.75rem;margin-bottom:1.25rem;position:relative;z-index:1}
+    .rank-unstable .rank-icon{background:linear-gradient(135deg,rgba(155,92,246,.3),rgba(224,64,251,.2));border:1px solid rgba(155,92,246,.4)}
+    .rank-legend .rank-icon{background:linear-gradient(135deg,rgba(255,196,0,.25),rgba(245,158,11,.15));border:1px solid rgba(255,196,0,.35)}
+    .rank-name{font-size:1.6rem;font-weight:900;letter-spacing:.02em;margin-bottom:.35rem;position:relative;z-index:1}
+    .rank-unstable .rank-name{background:linear-gradient(135deg,#c084fc,#e040fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .rank-legend .rank-name{background:linear-gradient(135deg,#ffd600,#ffa000);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .rank-tagline{font-size:.85rem;color:var(--gray);margin-bottom:1.5rem;font-weight:500;position:relative;z-index:1}
+    .rank-perks{display:flex;flex-direction:column;gap:.5rem;position:relative;z-index:1}
+    .rank-perk{display:flex;align-items:center;gap:.7rem;font-size:.875rem;font-weight:600}
+    .perk-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+    .rank-unstable .perk-dot{background:#c084fc;box-shadow:0 0 8px rgba(192,132,252,.6)}
+    .rank-legend  .perk-dot{background:#ffd600;box-shadow:0 0 8px rgba(255,214,0,.6)}
+    .rank-divider{height:1px;margin:1.25rem 0;position:relative;z-index:1}
+    .rank-unstable .rank-divider{background:linear-gradient(90deg,transparent,rgba(155,92,246,.4),transparent)}
+    .rank-legend   .rank-divider{background:linear-gradient(90deg,transparent,rgba(255,196,0,.35),transparent)}
+    .rank-badge{display:inline-flex;align-items:center;gap:.4rem;padding:.3rem .8rem;border-radius:9999px;font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;position:relative;z-index:1}
+    .rank-unstable .rank-badge{background:rgba(155,92,246,.15);border:1px solid rgba(155,92,246,.3);color:#c084fc}
+    .rank-legend   .rank-badge{background:rgba(255,196,0,.12);border:1px solid rgba(255,196,0,.3);color:#ffd600}
+    .rank-sparkle{position:absolute;inset:0;pointer-events:none;overflow:hidden;border-radius:1.5rem}
+    .spark{position:absolute;width:3px;height:3px;border-radius:50%;animation:sparkle 3s ease-in-out infinite}
+    .rank-unstable .spark{background:rgba(192,132,252,.8)}
+    .rank-legend   .spark{background:rgba(255,214,0,.8)}
+    @keyframes sparkle{0%,100%{opacity:0;transform:scale(0)}40%,60%{opacity:1;transform:scale(1)}}
+
+    /* ════════════════════════
+       STAFF SECTION
+    ════════════════════════ */
+    .staff-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:1rem}
+    .staff-card{background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:1.25rem;padding:1.4rem;display:flex;align-items:center;gap:1rem;transition:all .3s;position:relative;overflow:hidden}
+    .staff-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+    .staff-card:hover{transform:translateY(-4px)}
+    .staff-card.yellow{border-color:rgba(255,214,0,.2)} .staff-card.yellow:hover{box-shadow:0 8px 32px rgba(255,214,0,.12)} .staff-card.yellow::after{background:linear-gradient(90deg,#ffd600,#f97316)}
+    .staff-card.green {border-color:rgba(0,230,118,.2)} .staff-card.green:hover {box-shadow:0 8px 32px rgba(0,230,118,.12)} .staff-card.green::after {background:linear-gradient(90deg,#00e676,#00bcd4)}
+    .staff-card.orange{border-color:rgba(255,109,0,.2)} .staff-card.orange:hover{box-shadow:0 8px 32px rgba(255,109,0,.12)} .staff-card.orange::after{background:linear-gradient(90deg,#ff6d00,#ffd600)}
+    .staff-card.purple{border-color:rgba(155,92,246,.2)} .staff-card.purple:hover{box-shadow:0 8px 32px rgba(155,92,246,.12)} .staff-card.purple::after{background:linear-gradient(90deg,#9b5cf6,#e040fb)}
+    .staff-card.red   {border-color:rgba(255,82,82,.2)}  .staff-card.red:hover  {box-shadow:0 8px 32px rgba(255,82,82,.12)}  .staff-card.red::after  {background:linear-gradient(90deg,#ff5252,#e040fb)}
+    .staff-card.blue  {border-color:rgba(64,196,255,.2)} .staff-card.blue:hover {box-shadow:0 8px 32px rgba(64,196,255,.12)} .staff-card.blue::after {background:linear-gradient(90deg,#40c4ff,#448aff)}
+    .staff-av-wrap{width:52px;height:52px;border-radius:.75rem;padding:2px;flex-shrink:0}
+    .staff-card.yellow .staff-av-wrap{background:linear-gradient(135deg,#ffd600,#f97316)}
+    .staff-card.green  .staff-av-wrap{background:linear-gradient(135deg,#00e676,#00bcd4)}
+    .staff-card.orange .staff-av-wrap{background:linear-gradient(135deg,#ff6d00,#ffd600)}
+    .staff-card.purple .staff-av-wrap{background:linear-gradient(135deg,#9b5cf6,#e040fb)}
+    .staff-card.red    .staff-av-wrap{background:linear-gradient(135deg,#ff5252,#e040fb)}
+    .staff-card.blue   .staff-av-wrap{background:linear-gradient(135deg,#40c4ff,#448aff)}
+    .staff-av-inner{width:100%;height:100%;border-radius:.55rem;background:var(--bg);overflow:hidden}
+    .staff-av-inner img{width:100%;height:100%;object-fit:cover}
+    .staff-name{font-weight:800;font-size:1rem;color:var(--white)}
+    .staff-role{font-size:.78rem;font-weight:700;margin-top:.1rem}
+    .staff-card.yellow .staff-role{color:#ffd600}
+    .staff-card.green  .staff-role{color:#00e676}
+    .staff-card.orange .staff-role{color:#ff9800}
+    .staff-card.purple .staff-role{color:#c084fc}
+    .staff-card.red    .staff-role{color:#ff5252}
+    .staff-card.blue   .staff-role{color:#40c4ff}
+
+    /* ════════════════════════
+       CHANGELOG SECTION
+    ════════════════════════ */
+    .cl-sec{background:var(--card2)}
+    .cl-grid{display:flex;flex-direction:column;gap:.875rem;max-width:860px;margin:0 auto}
+    .cl-item{display:flex;gap:1.25rem;align-items:flex-start}
+    .cl-timeline{display:flex;flex-direction:column;align-items:center;padding-top:.4rem}
+    .cl-dot{width:12px;height:12px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--pink));box-shadow:0 0 12px rgba(155,92,246,.5);flex-shrink:0}
+    .cl-line{width:2px;flex:1;background:linear-gradient(to bottom,rgba(155,92,246,.3),transparent);margin-top:.4rem;min-height:30px}
+    .cl-item:last-child .cl-line{display:none}
+    .cl-body{flex:1;background:var(--card);border:1px solid rgba(255,255,255,.05);border-radius:1.1rem;padding:1.4rem 1.6rem;transition:all .3s}
+    .cl-body:hover{border-color:rgba(155,92,246,.25);transform:translateX(4px)}
+    .cl-top{display:flex;align-items:center;gap:.75rem;margin-bottom:.6rem;flex-wrap:wrap}
+    .cl-ver{font-family:'JetBrains Mono',monospace;font-size:.78rem;font-weight:700;background:linear-gradient(135deg,rgba(155,92,246,.2),rgba(224,64,251,.15));border:1px solid rgba(155,92,246,.3);color:#c084fc;padding:.2rem .6rem;border-radius:.4rem}
+    .cl-date{font-size:.78rem;color:var(--gray)}
+    .cl-new{font-size:.65rem;font-weight:800;text-transform:uppercase;letter-spacing:.1em;background:linear-gradient(135deg,#9b5cf6,#e040fb);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;border:1px solid rgba(155,92,246,.3);padding:.15rem .5rem;border-radius:.3rem}
+    .cl-title{font-size:1.05rem;font-weight:800;color:var(--white);margin-bottom:.3rem}
+    .cl-desc{font-size:.875rem;color:var(--gray);line-height:1.6}
+
+    /* ── FOOTER ── */
+    footer{position:relative;z-index:1;padding:2.5rem 1.5rem;border-top:1px solid rgba(255,255,255,.05);text-align:center}
+    footer p{color:var(--gray);font-size:.875rem}
+    footer .sub{font-size:.72rem;color:rgba(255,255,255,.15);margin-top:.4rem}
+
+    /* ── REVEAL ── */
+    .rev{opacity:0;transform:translateY(24px);transition:opacity .65s ease,transform .65s ease}
+    .rev.on{opacity:1;transform:none}
   </style>
 </head>
 <body>
 
 <canvas id="bg-canvas"></canvas>
 
+<!-- NAV -->
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="index.html">
+    <a class="nav-logo" href="#">
       <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="logo">
       <span>Unstable SMP</span>
     </a>
     <div class="nav-links">
-      <a href="index.html" class="active">Home</a>
+      <a href="#" class="active">Home</a>
       <a href="rules.html">Rules</a>
     </div>
-    <button class="nav-hamburger" id="hamburger">
+    <button class="ham" id="ham">
       <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
     </button>
   </div>
-  <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem;">
-    <div class="nav-mobile" id="mobile-menu" style="background:rgba(10,10,20,0.97);border:1px solid rgba(168,85,247,0.2);border-radius:0.75rem;padding:0.75rem;margin-top:0.5rem;">
-      <a href="index.html" class="active">Home</a>
-      <a href="rules.html">Rules</a>
+  <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem">
+    <div class="mob" id="mob" style="background:rgba(13,11,30,.97);border:1px solid var(--border);border-radius:.75rem;padding:.75rem;margin-top:.5rem">
+      <a href="#" style="padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;color:var(--gray);font-weight:700">Home</a>
+      <a href="rules.html" style="padding:.5rem .75rem;border-radius:.5rem;font-size:.875rem;color:var(--gray);font-weight:700">Rules</a>
     </div>
   </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-content">
-    <div class="hero-badge">
-      <span class="pulse-dot"></span>
-      <span style="color:#22c55e;font-weight:700">Online</span>
-      <span style="color:rgba(255,255,255,0.2)">·</span>
-      <span id="player-count" style="color:var(--gray)"><span style="color:var(--white);font-weight:700">—</span> / <span id="max-players">150</span> players</span>
-    </div>
-    <h1 class="hero-title">
-      <span class="t1">UNSTABLE</span>
-      <span class="t2">SMP</span>
-    </h1>
-    <p class="hero-sub" id="hero-desc">A hardcore survival experience. Build, fight, conquer. No second chances.</p>
-    <div class="hero-cta">
-      <div style="display:inline-flex;align-items:center;gap:1rem;background:rgba(16,16,42,0.8);border:1px solid rgba(168,85,247,0.3);border-radius:1rem;padding:1rem 1.5rem;cursor:pointer;transition:all 0.3s;" onclick="copyIP()" id="ip-box">
-        <div style="text-align:left">
-          <div style="font-size:0.68rem;text-transform:uppercase;letter-spacing:0.12em;color:var(--p1);font-weight:700;margin-bottom:0.2rem;">Server IP</div>
-          <div id="ip-display" style="font-family:'JetBrains Mono',monospace;font-size:clamp(1rem,2.5vw,1.5rem);font-weight:700;">play.unstablenet.xyz</div>
-        </div>
-        <div style="padding:0.6rem;background:rgba(168,85,247,0.2);border-radius:0.5rem;color:var(--p1);transition:background 0.2s;" id="copy-icon-wrap">
-          <svg id="copy-icon" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        </div>
-      </div>
-      <p id="copy-hint" style="margin-top:0.75rem;font-size:0.8rem;color:var(--gray)">Click to copy</p>
-    </div>
+  <div class="hero-badge">
+    <span class="pdot"></span>
+    Server Online &nbsp;·&nbsp;
+    <span id="hero-players" style="font-weight:800">— / <span id="hero-max">150</span></span>
   </div>
+  <h1>
+    <span class="h1a">UNSTABLE</span>
+    <span class="h1b">SMP</span>
+  </h1>
+  <p class="hero-sub" id="hero-desc">A hardcore survival experience. Build, fight, conquer. No second chances.</p>
 </section>
 
-<!-- SECTION 1: IP STATS + DISCORD -->
-<div class="split-section reveal">
-  <div class="split-grid">
-    <!-- IP/Stats Card -->
-    <div class="ip-card">
-      <div class="ip-card-label">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-        Server Info
+<!-- HERO BAR (IP + LOGO + DISCORD) -->
+<div class="hero-bar-wrap rev">
+  <div class="hero-bar">
+    <!-- Left: IP -->
+    <div class="bar-left">
+      <div class="bar-playnow">PLAY NOW</div>
+      <div class="bar-ip-row">
+        <button class="bar-copy-btn" onclick="copyIP()" id="copy-btn">
+          <svg id="copy-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          Copy IP
+          <span class="player-bubble" id="player-bubble">—</span>
+        </button>
+        <span class="bar-ip-text" id="ip-display">play.unstablenet.xyz</span>
       </div>
-      <div class="ip-addr" id="ip-card-addr">play.unstablenet.xyz</div>
-      <button class="copy-btn" onclick="copyIP()">
-        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-        Copy IP
-      </button>
-      <p class="ip-copy-hint" id="copy-hint-2">Click to copy server address</p>
-      <div class="ip-stats">
-        <div class="ip-stat">
-          <div class="ip-stat-val" id="stat-online">—</div>
-          <div class="ip-stat-label">Online Now</div>
-        </div>
-        <div class="ip-stat">
-          <div class="ip-stat-val" id="stat-max">150</div>
-          <div class="ip-stat-label">Max Players</div>
-        </div>
-        <div class="ip-stat">
-          <div class="ip-stat-val" style="font-size:1.1rem;">1.21</div>
-          <div class="ip-stat-label">Version</div>
-        </div>
+      <div class="copy-hint" id="copy-hint">Click to copy server address</div>
+    </div>
+
+    <!-- Center: Logo -->
+    <div class="bar-center">
+      <div class="bar-logo-wrap">
+        <img src="https://cdn.discordapp.com/icons/1208721828475043860/1569ac3773fead8ef23e14cfdaa46213.webp?size=1024" alt="Unstable SMP">
       </div>
     </div>
 
-    <!-- Discord Card -->
-    <div class="discord-card">
-      <div class="discord-logo-wrap">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+    <!-- Right: Discord -->
+    <div class="bar-right">
+      <div class="bar-dc-info">
+        <div class="bar-dc-title">DISCORD</div>
+        <div class="bar-dc-sub">Join Now</div>
       </div>
-      <div class="discord-title">Join Our Discord</div>
-      <div class="discord-count" id="discord-members">4,800+</div>
-      <div class="discord-count-label">Members</div>
-      <a href="https://discord.gg/WAYVDhEUJf" target="_blank" class="discord-join-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
-        Join Discord
+      <a href="https://discord.gg/WAYVDhEUJf" target="_blank" class="bar-discord-btn">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        <span class="discord-bubble" id="discord-bubble">—</span>
       </a>
     </div>
   </div>
 </div>
 
-<!-- SECTION 2: BANNER -->
-<div class="banner-section reveal" id="banner-section">
-  <div class="banner-wrap">
-    <div class="banner-box banner-bg-1" id="banner-box">
-      <div class="banner-shimmer"></div>
-      <div class="banner-emoji" id="banner-emoji">🎉</div>
-      <div class="banner-text">
-        <div class="banner-title" id="banner-title">Season 3 is LIVE!</div>
-        <div class="banner-desc" id="banner-desc">New map, new rules, new season. Jump in now and claim your territory.</div>
-      </div>
-      <div class="banner-right">
-        <div class="countdown-wrap" id="countdown-wrap" style="display:none">
-          <div class="countdown-unit"><div class="countdown-num" id="cd-days">00</div><div class="countdown-label">Days</div></div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-hours">00</div><div class="countdown-label">Hrs</div></div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-mins">00</div><div class="countdown-label">Min</div></div>
-          <div class="countdown-unit"><div class="countdown-num" id="cd-secs">00</div><div class="countdown-label">Sec</div></div>
-        </div>
-        <a id="banner-btn-el" href="https://discord.gg/WAYVDhEUJf" target="_blank" class="banner-btn" style="display:none">
-          Learn More →
-        </a>
-      </div>
-    </div>
-  </div>
+<!-- BANNER -->
+<div class="banner-sec" id="banner-sec" style="display:none">
+  <div id="banner-wrap"></div>
 </div>
 
-<!-- SECTION 3: STAFF -->
-<div class="section reveal">
-  <div class="section-inner">
-    <div class="section-header">
-      <div class="section-eyebrow eyebrow-purple">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+<!-- RANKS -->
+<section class="sec sec-alt">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="sec-head rev">
+      <div class="sec-tag t-purple">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        Server Ranks
+      </div>
+      <div class="sec-title">Exclusive Ranks</div>
+      <div class="sec-sub">Stand out from the crowd with our premium server ranks.</div>
+    </div>
+    <div class="ranks-grid rev">
+
+      <!-- UNSTABLE RANK -->
+      <div class="rank-card rank-unstable">
+        <div class="rank-card-bg"></div>
+        <div class="rank-sparkle">
+          <div class="spark" style="top:15%;left:10%;animation-delay:0s"></div>
+          <div class="spark" style="top:70%;left:85%;animation-delay:.8s"></div>
+          <div class="spark" style="top:40%;left:60%;animation-delay:1.6s"></div>
+          <div class="spark" style="top:85%;left:25%;animation-delay:2.4s"></div>
+        </div>
+        <div class="rank-card-inner">
+          <div class="rank-icon">⚡</div>
+          <div class="rank-name">UNSTABLE</div>
+          <div class="rank-tagline">For those who thrive in chaos.</div>
+          <div class="rank-badge">
+            <svg width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+            Supporter Rank
+          </div>
+          <div class="rank-divider"></div>
+          <div class="rank-perks">
+            <div class="rank-perk"><span class="perk-dot"></span>Purple name color in-game</div>
+            <div class="rank-perk"><span class="perk-dot"></span>[Unstable] chat prefix</div>
+            <div class="rank-perk"><span class="perk-dot"></span>3 homes & /fly in safe zones</div>
+            <div class="rank-perk"><span class="perk-dot"></span>Access to exclusive crates</div>
+            <div class="rank-perk"><span class="perk-dot"></span>Discord rank + channel access</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEGEND RANK -->
+      <div class="rank-card rank-legend">
+        <div class="rank-card-bg"></div>
+        <div class="rank-sparkle">
+          <div class="spark" style="top:10%;left:80%;animation-delay:.4s"></div>
+          <div class="spark" style="top:60%;left:5%;animation-delay:1.2s"></div>
+          <div class="spark" style="top:30%;left:45%;animation-delay:2s"></div>
+          <div class="spark" style="top:80%;left:70%;animation-delay:.6s"></div>
+          <div class="spark" style="top:50%;left:92%;animation-delay:1.8s"></div>
+        </div>
+        <div class="rank-card-inner">
+          <div class="rank-icon">👑</div>
+          <div class="rank-name">LEGEND</div>
+          <div class="rank-tagline">Reserved for the truly legendary.</div>
+          <div class="rank-badge">
+            <svg width="10" height="10" fill="currentColor" viewBox="0 0 24 24"><path d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z"/></svg>
+            Premium Rank
+          </div>
+          <div class="rank-divider"></div>
+          <div class="rank-perks">
+            <div class="rank-perk"><span class="perk-dot"></span>Gold name color in-game</div>
+            <div class="rank-perk"><span class="perk-dot"></span>[Legend] chat prefix</div>
+            <div class="rank-perk"><span class="perk-dot"></span>6 homes & /fly everywhere</div>
+            <div class="rank-perk"><span class="perk-dot"></span>All Unstable rank perks</div>
+            <div class="rank-perk"><span class="perk-dot"></span>Exclusive Legend crate key</div>
+            <div class="rank-perk"><span class="perk-dot"></span>Priority join queue</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- STAFF -->
+<section class="sec">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="sec-head rev">
+      <div class="sec-tag t-pink">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         The Team
       </div>
-      <div class="section-title">Meet Our Staff</div>
-      <div class="section-desc">The people keeping Unstable SMP running 24/7.</div>
+      <div class="sec-title">Meet Our Staff</div>
+      <div class="sec-sub">The crew keeping Unstable SMP running 24/7.</div>
     </div>
-    <div class="staff-grid" id="staff-grid"></div>
+    <div class="staff-grid rev" id="staff-grid"></div>
   </div>
-</div>
+</section>
 
-<!-- SECTION 4: CHANGELOG -->
-<div class="section reveal" style="padding-bottom:8rem;">
-  <div class="section-inner">
-    <div class="section-header">
-      <div class="section-eyebrow eyebrow-cyan">
-        <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
-        What's New
+<!-- CHANGELOG -->
+<section class="sec cl-sec">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="sec-head rev">
+      <div class="sec-tag t-cyan">
+        <svg width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+        Updates
       </div>
-      <div class="section-title">Changelog</div>
-      <div class="section-desc">Every update, patch, and improvement to the server.</div>
+      <div class="sec-title">Changelog</div>
+      <div class="sec-sub">Every update, fix, and improvement — tracked.</div>
     </div>
-    <div class="changelog-timeline" id="changelog-list"></div>
+    <div class="cl-grid rev" id="changelog-list"></div>
   </div>
-</div>
+</section>
 
 <footer>
-  <p>Made with <span style="color:#a855f7">♥</span> by KeyLymPi</p>
-  <p class="sub">© 2026 Unstable SMP · <a href="admin.html" style="color:rgba(255,255,255,0.15);text-decoration:underline">Admin</a></p>
+  <p>Made with <span style="color:#e040fb">♥</span> by KeyLymPi</p>
+  <p class="sub">© 2026 Unstable SMP · <a href="admin.html" style="color:rgba(255,255,255,.15);text-decoration:underline">Admin</a></p>
 </footer>
 
 <script>
-// ══ ANIMATED BACKGROUND ══
-(function() {
-  const canvas = document.getElementById('bg-canvas');
-  const ctx = canvas.getContext('2d');
-  let W, H, particles = [], mouse = {x: -999, y: -999};
-
-  const COLORS = ['#a855f7','#ec4899','#7c3aed','#06b6d4','#f97316'];
-
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-  }
-
-  function Particle() {
-    this.reset();
-  }
-  Particle.prototype.reset = function() {
-    this.x = Math.random() * W;
-    this.y = Math.random() * H;
-    this.r = Math.random() * 2 + 0.5;
-    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    this.alpha = Math.random() * 0.6 + 0.1;
-    this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = (Math.random() - 0.5) * 0.3;
-    this.twinkle = Math.random() * Math.PI * 2;
-    this.twinkleSpeed = Math.random() * 0.02 + 0.005;
-  };
-
-  function init() {
-    resize();
-    particles = [];
-    for (let i = 0; i < 120; i++) particles.push(new Particle());
-  }
-
-  function draw() {
-    ctx.clearRect(0, 0, W, H);
-
-    // Gradient orbs
-    const orbs = [
-      {x: W*0.15, y: H*0.2,  r: 350, c: 'rgba(124,58,237,0.12)'},
-      {x: W*0.8,  y: H*0.15, r: 300, c: 'rgba(236,72,153,0.1)'},
-      {x: W*0.5,  y: H*0.7,  r: 400, c: 'rgba(6,182,212,0.08)'},
-      {x: W*0.9,  y: H*0.8,  r: 250, c: 'rgba(168,85,247,0.1)'},
-    ];
-    orbs.forEach(o => {
-      const g = ctx.createRadialGradient(o.x, o.y, 0, o.x, o.y, o.r);
-      g.addColorStop(0, o.c);
-      g.addColorStop(1, 'transparent');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, W, H);
-    });
-
-    // Grid
-    ctx.strokeStyle = 'rgba(168,85,247,0.04)';
-    ctx.lineWidth = 1;
-    for (let x = 0; x < W; x += 56) {
-      ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
-    }
-    for (let y = 0; y < H; y += 56) {
-      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
-    }
-
-    // Particles
-    particles.forEach(p => {
-      p.twinkle += p.twinkleSpeed;
-      const a = p.alpha * (0.6 + 0.4 * Math.sin(p.twinkle));
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      ctx.fillStyle = p.color.replace(')', `,${a})`).replace('rgb(', 'rgba(').replace('#', '');
-      // use hex alpha trick
-      ctx.globalAlpha = a;
-      ctx.fillStyle = p.color;
-      ctx.fill();
-      ctx.globalAlpha = 1;
-
-      p.x += p.vx;
-      p.y += p.vy;
-      if (p.x < -10 || p.x > W+10 || p.y < -10 || p.y > H+10) p.reset();
-    });
-
-    // Shooting stars occasionally
-    requestAnimationFrame(draw);
-  }
-
-  window.addEventListener('resize', () => { resize(); });
-  init();
-  draw();
-})();
+// ══ CANVAS BG ══
+const cv = document.getElementById('bg-canvas');
+const cx = cv.getContext('2d');
+let W,H;
+function rsz(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight}
+rsz(); window.addEventListener('resize',rsz);
+const COLS=['155,92,246','236,72,153','34,211,238','249,115,22','74,222,128'];
+class P{
+  constructor(){this.re()}
+  re(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=Math.random()*1.8+.4;this.vx=(Math.random()-.5)*.35;this.vy=(Math.random()-.5)*.35;this.a=Math.random()*.4+.05;this.c=COLS[Math.floor(Math.random()*COLS.length)];this.p=Math.random()*Math.PI*2}
+  tick(){this.x+=this.vx;this.y+=this.vy;this.p+=.015;if(this.x<0||this.x>W||this.y<0||this.y>H)this.re()}
+  draw(){cx.beginPath();cx.arc(this.x,this.y,this.r,0,Math.PI*2);cx.fillStyle=`rgba(${this.c},${this.a*(0.6+0.4*Math.sin(this.p))})`;cx.fill()}
+}
+const pts=[];for(let i=0;i<100;i++)pts.push(new P());
+const orbs=[{x:.15,y:.2,r:400,c:'155,92,246',s:.00025},{x:.85,y:.75,r:350,c:'236,72,153',s:.0003},{x:.5,y:.5,r:450,c:'34,211,238',s:.0002}];
+let t=0;
+function loop(){
+  cx.clearRect(0,0,W,H);t++;
+  orbs.forEach(o=>{
+    const ox=W*(o.x+.06*Math.sin(t*o.s*1000)),oy=H*(o.y+.06*Math.cos(t*o.s*800));
+    const g=cx.createRadialGradient(ox,oy,0,ox,oy,o.r);
+    g.addColorStop(0,`rgba(${o.c},.07)`);g.addColorStop(1,`rgba(${o.c},0)`);
+    cx.beginPath();cx.arc(ox,oy,o.r,0,Math.PI*2);cx.fillStyle=g;cx.fill();
+  });
+  cx.strokeStyle='rgba(155,92,246,.03)';cx.lineWidth=1;
+  for(let x=0;x<W;x+=64){cx.beginPath();cx.moveTo(x,0);cx.lineTo(x,H);cx.stroke()}
+  for(let y=0;y<H;y+=64){cx.beginPath();cx.moveTo(0,y);cx.lineTo(W,y);cx.stroke()}
+  pts.forEach(p=>{p.tick();p.draw()});
+  requestAnimationFrame(loop);
+}
+loop();
 
 // ══ NAV ══
-document.getElementById('hamburger').addEventListener('click', () => {
-  document.getElementById('mobile-menu').classList.toggle('open');
-});
-
-// ══ DATA ══
-function get(key, def) { try { return JSON.parse(localStorage.getItem('usmp_' + key)) || def; } catch(e) { return def; } }
-
-const DEFAULT_STAFF = [
-  { id:'d1', name:'4peak',      role:'👑 Owner',    color:'yellow', img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4' },
-  { id:'d2', name:'blazeybean', role:'⭐ Co-Owner', color:'green',  img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4' },
-  { id:'d3', name:'Caleb',      role:'🛡️ Manager', color:'orange', img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4' }
-];
-const DEFAULT_CHANGELOG = [
-  { id:'c1', version:'v2.3', date:'Apr 2026', title:'New Crate Rewards', desc:'Added new crate rewards and performance improvements.' },
-  { id:'c2', version:'v2.2', date:'Mar 2026', title:'Combat Balancing & Bug Fixes', desc:'Combat balancing adjustments and various bug fixes.' }
-];
-const DEFAULT_SETTINGS = { ip:'play.unstablenet.xyz', members:'4,800+', maxPlayers:'150', desc:'A hardcore survival experience. Build, fight, conquer. No second chances.' };
-const DEFAULT_BANNER = { visible:true, emoji:'🎉', title:'Season 3 is LIVE!', desc:'New map, new rules, new season. Jump in now and claim your territory.', style:'1', showCountdown:false, countdownTarget:'', showBtn:false, btnText:'Learn More', btnUrl:'https://discord.gg/WAYVDhEUJf' };
-
-// ══ SETTINGS ══
-const settings = get('settings', DEFAULT_SETTINGS);
-const ip = settings.ip || DEFAULT_SETTINGS.ip;
-document.getElementById('ip-display').textContent = ip;
-document.getElementById('ip-card-addr').textContent = ip;
-document.getElementById('hero-desc').textContent = settings.desc || DEFAULT_SETTINGS.desc;
-document.getElementById('discord-members').textContent = settings.members || DEFAULT_SETTINGS.members;
-document.getElementById('stat-max').textContent = settings.maxPlayers || '150';
+document.getElementById('ham').addEventListener('click',()=>document.getElementById('mob').classList.toggle('open'));
 
 // ══ COPY IP ══
-function copyIP() {
-  const ipText = get('settings', DEFAULT_SETTINGS).ip || DEFAULT_SETTINGS.ip;
-  navigator.clipboard.writeText(ipText).then(() => {
-    ['copy-hint','copy-hint-2'].forEach(id => {
-      const el = document.getElementById(id);
-      el.textContent = '✓ Copied!';
-      el.style.color = '#a855f7';
-    });
-    document.getElementById('copy-icon').innerHTML = '<polyline points="20 6 9 17 4 12"/>';
-    document.getElementById('copy-icon-wrap').style.background = 'rgba(34,197,94,0.2)';
-    document.getElementById('copy-icon-wrap').style.color = '#22c55e';
-    setTimeout(() => {
-      document.getElementById('copy-hint').textContent = 'Click to copy';
-      document.getElementById('copy-hint').style.color = '';
-      document.getElementById('copy-hint-2').textContent = 'Click to copy server address';
-      document.getElementById('copy-hint-2').style.color = '';
-      document.getElementById('copy-icon').innerHTML = '<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>';
-      document.getElementById('copy-icon-wrap').style.background = '';
-      document.getElementById('copy-icon-wrap').style.color = '';
-    }, 2000);
+function copyIP(){
+  const ip=document.getElementById('ip-display').textContent;
+  navigator.clipboard.writeText(ip).then(()=>{
+    document.getElementById('copy-hint').textContent='✓ Copied!';
+    document.getElementById('copy-hint').style.color='var(--green)';
+    document.getElementById('copy-icon').innerHTML='<polyline points="20 6 9 17 4 12"/>';
+    setTimeout(()=>{
+      document.getElementById('copy-hint').textContent='Click to copy server address';
+      document.getElementById('copy-hint').style.color='';
+      document.getElementById('copy-icon').innerHTML='<rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/>';
+    },2000);
   });
 }
 
+// ══ DATA ══
+const DS={ip:'play.unstablenet.xyz',members:'4800+',maxPlayers:'150',desc:'A hardcore survival experience. Build, fight, conquer. No second chances.'};
+const DSTAFF=[
+  {id:'d1',name:'4peak',role:'👑 Owner',color:'yellow',img:'https://s.namemc.com/2d/skin/face.png?id=36b33625a9ef1d71&scale=4'},
+  {id:'d2',name:'blazeybean',role:'⭐ Co-Owner',color:'green',img:'https://s.namemc.com/2d/skin/face.png?id=5767dbc19537379d&scale=4'},
+  {id:'d3',name:'Caleb',role:'🛡️ Manager',color:'orange',img:'https://s.namemc.com/2d/skin/face.png?id=84155d265bf9df6e&scale=4'}
+];
+const DCL=[
+  {id:'c1',version:'v2.3',date:'',title:'New Crate Rewards',desc:'Added new crate rewards and performance improvements.'},
+  {id:'c2',version:'v2.2',date:'',title:'Combat Balancing & Bug Fixes',desc:'Combat balancing adjustments and bug fixes.'}
+];
+const DBNR={enabled:false,style:'event',tag:'🎉 Event',title:'Season 3 Starts Soon!',desc:'New season this weekend. Get ready.',showCountdown:true,countdownTo:'',btnText:'',btnUrl:''};
+
+function get(k,d){try{return JSON.parse(localStorage.getItem('usmp_'+k))||d}catch(e){return d}}
+
+// ══ APPLY SETTINGS ══
+const S=get('settings',DS);
+document.getElementById('ip-display').textContent=S.ip||DS.ip;
+document.getElementById('hero-desc').textContent=S.desc||DS.desc;
+document.getElementById('hero-max').textContent=S.maxPlayers||'150';
+
 // ══ PLAYER COUNT ══
-fetch('https://api.mcsrvstat.us/3/' + ip)
-  .then(r => r.json())
-  .then(d => {
-    const on = d?.players?.online ?? 0;
-    const max = d?.players?.max ?? (settings.maxPlayers || 150);
-    document.getElementById('player-count').innerHTML = `<span style="color:#fff;font-weight:700">${on}</span> / <span id="max-players">${max}</span> players`;
-    document.getElementById('stat-online').textContent = on;
-    document.getElementById('stat-max').textContent = max;
-  }).catch(() => { document.getElementById('stat-online').textContent = '0'; });
+fetch('https://api.mcsrvstat.us/3/'+(S.ip||DS.ip))
+  .then(r=>r.json())
+  .then(d=>{
+    const on=d?.players?.online??0,max=d?.players?.max??(S.maxPlayers||150);
+    document.getElementById('player-bubble').textContent=on;
+    document.getElementById('hero-players').innerHTML=`<span style="font-weight:900;color:var(--green)">${on}</span> / ${max}`;
+  }).catch(()=>{document.getElementById('player-bubble').textContent='0'});
+
+// ══ DISCORD MEMBER COUNT ══
+const mem=S.members||DS.members;
+document.getElementById('discord-bubble').textContent=mem;
 
 // ══ BANNER ══
-(function() {
-  const b = get('banner', DEFAULT_BANNER);
-  const section = document.getElementById('banner-section');
-  if (!b.visible) { section.style.display = 'none'; return; }
-  document.getElementById('banner-emoji').textContent = b.emoji || '🎉';
-  document.getElementById('banner-title').textContent = b.title || 'Announcement';
-  document.getElementById('banner-desc').textContent = b.desc || '';
-  const box = document.getElementById('banner-box');
-  box.className = 'banner-box banner-bg-' + (b.style || '1');
-
-  if (b.showBtn && b.btnText) {
-    const btn = document.getElementById('banner-btn-el');
-    btn.style.display = 'inline-flex';
-    btn.textContent = b.btnText + ' →';
-    btn.href = b.btnUrl || '#';
+function renderBanner(){
+  const b=get('banner',DBNR);
+  if(!b.enabled){document.getElementById('banner-sec').style.display='none';return}
+  document.getElementById('banner-sec').style.display='';
+  let cdHTML='';
+  if(b.showCountdown&&b.countdownTo){
+    cdHTML=`<div class="banner-countdown">
+      <div class="cd-block"><div class="cd-num" id="cd-d">--</div><div class="cd-label">Days</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><div class="cd-num" id="cd-h">--</div><div class="cd-label">Hrs</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><div class="cd-num" id="cd-m">--</div><div class="cd-label">Mins</div></div>
+      <div class="cd-sep">:</div>
+      <div class="cd-block"><div class="cd-num" id="cd-s">--</div><div class="cd-label">Secs</div></div>
+    </div>`;
   }
-
-  if (b.showCountdown && b.countdownTarget) {
-    document.getElementById('countdown-wrap').style.display = 'flex';
-    const target = new Date(b.countdownTarget).getTime();
-    function tick() {
-      const diff = target - Date.now();
-      if (diff <= 0) { document.getElementById('countdown-wrap').style.display = 'none'; return; }
-      const d = Math.floor(diff / 86400000);
-      const h = Math.floor((diff % 86400000) / 3600000);
-      const m = Math.floor((diff % 3600000) / 60000);
-      const s = Math.floor((diff % 60000) / 1000);
-      document.getElementById('cd-days').textContent = String(d).padStart(2,'0');
-      document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
-      document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
-      document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
-    }
-    tick();
-    setInterval(tick, 1000);
-  }
-})();
-
-// ══ STAFF ══
-function renderStaff() {
-  const staff = get('staff', DEFAULT_STAFF);
-  const grid = document.getElementById('staff-grid');
-  if (!staff.length) { grid.innerHTML = '<p style="color:var(--gray);text-align:center;padding:2rem;grid-column:1/-1">No staff yet.</p>'; return; }
-  grid.innerHTML = staff.map(s => `
-    <div class="staff-card ${s.color}">
-      <div class="staff-avatar-wrap">
-        <div class="staff-avatar-inner">
-          <img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">
+  const btnHTML=b.btnText&&b.btnUrl?`<a href="${b.btnUrl}" target="_blank" class="banner-btn-link">${b.btnText} →</a>`:'';
+  document.getElementById('banner-wrap').innerHTML=`
+    <div class="banner-card b-${b.style}">
+      <div class="banner-bg-stripe"></div>
+      <div class="banner-glow"></div>
+      <div class="banner-inner">
+        <div>
+          ${b.tag?`<div class="banner-tag">${b.tag}</div>`:''}
+          <div class="banner-title">${b.title}</div>
+          ${b.desc?`<div class="banner-desc">${b.desc}</div>`:''}
+          ${cdHTML}
+          ${btnHTML}
         </div>
       </div>
-      <div>
-        <div class="staff-name">${s.name}</div>
-        <div class="staff-role">${s.role}</div>
-      </div>
+    </div>`;
+  if(b.showCountdown&&b.countdownTo){
+    function tick(){
+      const diff=new Date(b.countdownTo)-new Date();
+      if(diff<=0){const cw=document.getElementById('cd-d');if(cw)cw.closest('.banner-countdown').innerHTML='<span style="font-size:1.5rem;font-weight:800">🎉 It\'s time!</span>';return}
+      const dd=Math.floor(diff/86400000),hh=Math.floor((diff%86400000)/3600000),mm=Math.floor((diff%3600000)/60000),ss=Math.floor((diff%60000)/1000);
+      ['d','h','m','s'].forEach((k,i)=>{const el=document.getElementById('cd-'+k);if(el)el.textContent=String([dd,hh,mm,ss][i]).padStart(2,'0')});
+    }
+    tick();setInterval(tick,1000);
+  }
+}
+
+// ══ STAFF ══
+function renderStaff(){
+  const staff=get('staff',DSTAFF);
+  const g=document.getElementById('staff-grid');
+  if(!staff.length){g.innerHTML='<p style="color:var(--gray);text-align:center;padding:2rem;grid-column:1/-1">No staff yet.</p>';return}
+  g.innerHTML=staff.map(s=>`
+    <div class="staff-card ${s.color}">
+      <div class="staff-av-wrap"><div class="staff-av-inner">${s.img?`<img src="${s.img}" alt="${s.name}" onerror="this.style.display='none'">`:''}</div></div>
+      <div><div class="staff-name">${s.name}</div><div class="staff-role">${s.role}</div></div>
     </div>`).join('');
 }
 
 // ══ CHANGELOG ══
-function renderChangelog() {
-  const log = get('changelog', DEFAULT_CHANGELOG);
-  const list = document.getElementById('changelog-list');
-  if (!log.length) { list.innerHTML = '<p style="color:var(--gray);text-align:center;padding:2rem">No updates yet.</p>'; return; }
-  list.innerHTML = log.map((c, i) => `
-    <div class="changelog-entry">
-      <div class="changelog-dot-wrap">
-        <div class="changelog-dot ${i === 0 ? 'latest' : 'older'}">
-          <svg width="16" height="16" fill="none" stroke="${i===0?'white':'var(--gray)'}" stroke-width="2.5" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+function renderChangelog(){
+  const log=get('changelog',DCL);
+  const l=document.getElementById('changelog-list');
+  if(!log.length){l.innerHTML='<p style="color:var(--gray);text-align:center;padding:2rem">No updates yet.</p>';return}
+  l.innerHTML=log.map((c,i)=>`
+    <div class="cl-item">
+      <div class="cl-timeline"><div class="cl-dot"></div><div class="cl-line"></div></div>
+      <div class="cl-body">
+        <div class="cl-top">
+          <span class="cl-ver">${c.version}</span>
+          ${c.date?`<span class="cl-date">${c.date}</span>`:''}
+          ${i===0?'<span class="cl-new">Latest</span>':''}
         </div>
-      </div>
-      <div class="changelog-body">
-        <div class="changelog-header">
-          <span class="changelog-ver">${c.version}</span>
-          ${c.date ? `<span class="changelog-date">${c.date}</span>` : ''}
-          ${i === 0 ? '<span class="new-badge">Latest</span>' : ''}
-        </div>
-        <div class="changelog-title">${c.title}</div>
-        ${c.desc ? `<div class="changelog-desc">${c.desc}</div>` : ''}
+        <div class="cl-title">${c.title}</div>
+        ${c.desc?`<div class="cl-desc">${c.desc}</div>`:''}
       </div>
     </div>`).join('');
 }
 
-renderStaff();
-renderChangelog();
+renderBanner();renderStaff();renderChangelog();
 
 // ══ SCROLL REVEAL ══
-const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), { threshold: 0.06 });
-document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+const obs=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting)x.target.classList.add('on')}),{threshold:.08});
+document.querySelectorAll('.rev').forEach(el=>obs.observe(el));
 </script>
 </body>
 </html>
